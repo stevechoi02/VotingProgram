@@ -13,12 +13,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * ClientMain 클래스
+ */
 public class ClientMain extends JFrame {
-	
-	GridBagLayout gbl;
+    GridBagLayout gbl;
     JPanel vote;
-    
-	public ClientMain() {
+
+    /**
+     * ClientMain 생성자
+     */
+    public ClientMain() {
 		super("메인 ui");//프레임 제목
 		setSize(1000,600);//실행했을때 켜지는 컨테이너 크기 설정
 		setVisible(true);
@@ -61,7 +66,12 @@ public class ClientMain extends JFrame {
     setVisible(true);
 	}
 
-public static void main(String[] args) {
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
+    public static void main(String[] args) {
 	 ClientMain m= new ClientMain();
 	m.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	
