@@ -1,21 +1,19 @@
 package main.ui.client;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
 /*
- * ì‚¬ìš©ì ì–´í”Œë¦¬ì¼€ì´ì…˜ ì´ˆê¸°í™”ë©´
+ * »ç¿ëÀÚ ¾îÇÃ¸®ÄÉÀÌ¼Ç ÃÊ±âÈ­¸é
  */
 
 
@@ -35,44 +33,46 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 	private JButton btnOK, btnCancel;
 
-	private String location[] = {"","ì„œìš¸íŠ¹ë³„ì‹œ","ê²½ê¸°ë„","ê°•ì›ë„","ì¶©ì²­ë„",
-			"ì „ë¼ë„","ê²½ìƒë„","ë“±ë“±"};
+	private String location[] = {"","¼­¿ïÆ¯º°½Ã","°æ±âµµ","°­¿øµµ","ÃæÃ»µµ",
+			"Àü¶óµµ","°æ»óµµ","µîµî"};
 
 	private JComboBox cbRegion = new JComboBox(location);
 
-	private JPanel panelMain, panel01, panel02;
+	public JPanel panelMain;
+	private JPanel panel01, panel02;
 
 	public ClientLogin() {
 
-		//setTitle("ì„ ê±°ê´€ë¦¬ í”„ë¡œê·¸ë¨ : ì‚¬ìš©ììš©");
-		setSize(600,400);
+		//setTitle("¼±°Å°ü¸® ÇÁ·Î±×·¥ : »ç¿ëÀÚ¿ë");
+		//setSize(600,400);
 		/*
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);//ìœˆë„ìš° í”„ë ˆì„ ì¤‘ì•™ ìœ„ì¹˜
-		setResizable(false);//ì‚¬ì´ì¦ˆ ì¡°ì ˆ ë¶ˆê°€ ì„¤ì •
+		setLocationRelativeTo(null);//À©µµ¿ì ÇÁ·¹ÀÓ Áß¾Ó À§Ä¡
+		setResizable(false);//»çÀÌÁî Á¶Àı ºÒ°¡ ¼³Á¤
 		 */
 		
-		lblTitle = new JLabel("íˆ¬í‘œì ê°œì¸ì •ë³´ ì…ë ¥");
+		lblTitle = new JLabel("ÅõÇ¥ÀÚ °³ÀÎÁ¤º¸ ÀÔ·Â");
 		lblTitle.setFont(new Font("Serif",Font.BOLD|Font.ITALIC,30));
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
 
-		lblName = new JLabel("ì´      ë¦„ : ");
-		lblPswd = new JLabel("ì£¼ë¯¼ë²ˆí˜¸ : ");
-		lblRegion = new JLabel("ì§€      ì—­ : ");
+		lblName = new JLabel("ÀÌ      ¸§ : ");
+		lblPswd = new JLabel("ÁÖ¹Î¹øÈ£ : ");
+		lblRegion = new JLabel("Áö      ¿ª : ");
 
 		txtName = new JTextField(15);
 		txtPswd = new JTextField(15);
 
 		cbRegion.setSelectedIndex(0);
 
-		btnOK = new JButton("í™• ì¸");
-		btnCancel = new JButton("ì·¨ ì†Œ");
+		btnOK = new JButton("È® ÀÎ");
+		btnCancel = new JButton("Ãë ¼Ò");
 		//btnOK.setPreferredSize(new Dimension(80,50));
 		//btnCancel.setPreferredSize(new Dimension(80,50));
 		btnOK.addActionListener(this);
 		btnCancel.addActionListener(this);
 		
 		panelMain = new JPanel();
+		panelMain.setLayout(new BorderLayout());
 
 		panel01 = new JPanel();
 		panel01.add(lblTitle);
@@ -104,13 +104,13 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 
 		panelMain.add(panel01, BorderLayout.NORTH);
-		panelMain.add(panel01, BorderLayout.SOUTH);
+		panelMain.add(panel02, BorderLayout.CENTER);
 
 		//pack();
 		//setVisible(true);
 
 
-	}//ìƒì„±ì
+	}//»ı¼ºÀÚ
 /*
 	public static void main(String[] args) {
 
@@ -123,7 +123,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 		if(e.getSource() == btnOK) {
 			//new ClientPage2();
-			new Choose01();
+			//new Choose01();
 			setVisible(false);
 			//System.out.println("test");
 		}else if(e.getSource() == btnCancel){
