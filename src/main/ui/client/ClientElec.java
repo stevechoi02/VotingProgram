@@ -2,7 +2,6 @@ package main.ui.client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,7 +20,7 @@ public class ClientElec extends JPanel {
 	
 	private JButton btnOK, btnCancel;
 	
-	private String[] tableName = {"湲고", "대", "吏", "ы щ"};
+	private String[] tableName = {"기호", "이름", "날짜", "투표 여부"};
 	private String[] longList;
 	
 	//private JComboBox cbList = new JComboBox(longList);
@@ -36,46 +35,37 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
-		lblTitle = new JLabel("嫄 紐⑸");
-		lblTitle.setHorizontalAlignment(JLabel.CENTER);
-		lblGuide = new JLabel("嫄 紐⑸ 댁＜몄.");
-		lblGuide.setHorizontalAlignment(JLabel.CENTER);
-
+		setSize(1000,600);
+		setVisible(true);
+		lblTitle = new JLabel("선거 목록");
+		lblGuide = new JLabel("선거 목록에서 선택해주세요.");
 		lblImg = new JLabel();
-		lblImg.setHorizontalAlignment(JLabel.CENTER);
-		ImageIcon img = new ImageIcon("./대�吏 遺ъ DB寃쎈");
+		ImageIcon img = new ImageIcon("./이미지 불러올 DB경로");
 		
-//		// ≪泥由
+//		//후에 액션처리
 //		lblImg.setIcon(img);
 //		lblGuide.setText("");
 	
-		btnOK = new JButton("");
-		btnCancel = new JButton("痍⑥");
+		btnOK = new JButton("확인");
+		btnCancel = new JButton("취소");
 		
 		panelMain = new JPanel();
-		panelMain.setLayout(new GridLayout(1, 2,10,10));
 		panel01 = new JPanel();
-		panel01.setLayout(new BorderLayout());
 		panel02 = new JPanel();
-		panel02.setLayout(new BorderLayout());
 		panel03 = new JPanel();
 		
-		panel01.add(lblGuide, BorderLayout.NORTH); 
-		panel01.add(lblImg, BorderLayout.CENTER);
-		panel01.add(panel03,BorderLayout.SOUTH);
-		
+		panel01.add(lblGuide); 
+		panel01.add(lblImg);
+		panel01.add(panel03);
 		
 		panel03.add(btnOK);
 		panel03.add(btnCancel);
 		
-		panel02.add(lblTitle, BorderLayout.NORTH);
-		panel02.add(jsp, BorderLayout.CENTER);
+		panel02.add(lblTitle);
+		panel02.add(jsp);
 		
 		panelMain.add(panel01);
 		panelMain.add(panel02);
-		
-		add(panelMain);
-		
 		
 		
 	}
