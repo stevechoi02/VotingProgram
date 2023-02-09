@@ -1,12 +1,8 @@
 package main.ui.client;
 
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import java.awt.*;
+import java.security.acl.Group;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,9 +21,15 @@ public class ClientMain extends JPanel {
      */
     public ClientMain() {
 		//프레임 제목
-		setSize(1000,600);//실행했을때 켜지는 컨테이너 크기 설정
+		setSize(1000,800);//실행했을때 켜지는 컨테이너 크기 설정
 		
-		setLayout((LayoutManager) new FlowLayout(FlowLayout.CENTER,20,30));
+//		setLayout((LayoutManager) new FlowLayout(FlowLayout.CENTER,20,30));
+		GroupLayout layout = new GroupLayout(this);
+
+		setLayout(layout);
+
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 		
 		JPanel vote= new JPanel(new GridLayout(2,15));
 		vote.add(new JLabel("투표",JLabel.CENTER));
@@ -48,21 +50,36 @@ public class ClientMain extends JPanel {
 		 
 	//버튼
 		 
-	JPanel VoteBtn = new JPanel();
-	
-	JButton btn1 = new JButton("선거선택");
-	JButton btn2 = new JButton("투표");
-	JButton btn3 = new JButton("내 투표 확인");
-	JButton btn4 = new JButton("나가기");
-	
-	VoteBtn.add(btn1);
-	VoteBtn.add(btn2);
-	VoteBtn.add(btn3);
-	VoteBtn.add(btn4);
-	
-	add(VoteBtn);
-	 
-    setVisible(true);
+		JPanel VoteBtn = new JPanel(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		JButton btn1 = new JButton("선거선택");
+		JButton btn2 = new JButton("투표");
+		JButton btn3 = new JButton("내 투표 확인");
+		JButton btn4 = new JButton("나가기");
+
+		c.gridwidth=GridBagConstraints.REMAINDER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0,0,10,0);
+		VoteBtn.add(btn1,c);
+		VoteBtn.add(btn2,c);
+		VoteBtn.add(btn3,c);
+		VoteBtn.add(btn4,c);
+
+	//	add(VoteBtn);
+
+		layout.setHorizontalGroup(layout.createSequentialGroup()
+				.addComponent(vote1)
+				.addComponent(vote)
+				.addComponent(VoteBtn)
+		);
+
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				.addComponent(vote)
+				.addComponent(vote1)
+				.addComponent(VoteBtn)
+		);
+		setVisible(true);
 	}
 
     /**
