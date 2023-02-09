@@ -2,6 +2,7 @@ package main.ui.client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,7 +21,7 @@ public class ClientElec extends JPanel {
 	
 	private JButton btnOK, btnCancel;
 	
-	private String[] tableName = {"±âÈ£", "ÀÌ¸§", "³¯Â¥", "ÅõÇ¥ ¿©ºÎ"};
+	private String[] tableName = {"ê¸°í˜¸", "ì´ë¦„", "ë‚ ì§œ", "íˆ¬í‘œ ì—¬ë¶€"};
 	private String[] longList;
 	
 	//private JComboBox cbList = new JComboBox(longList);
@@ -35,35 +36,45 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
-		lblTitle = new JLabel("¼±°Å ¸ñ·Ï");
-		lblGuide = new JLabel("¼±°Å ¸ñ·Ï¿¡¼­ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+		lblTitle = new JLabel("ì„ ê±° ëª©ë¡");
+		lblTitle.setHorizontalAlignment(JLabel.CENTER);
+		lblGuide = new JLabel("ì„ ê±° ëª©ë¡ì—ì„œ ì„ íƒí•´ì£¼ì„¸ìš”.");
+		lblGuide.setHorizontalAlignment(JLabel.CENTER);
 		lblImg = new JLabel();
-		ImageIcon img = new ImageIcon("./ÀÌ¹ÌÁö ºÒ·¯¿Ã DB°æ·Î");
+		lblImg.setHorizontalAlignment(JLabel.CENTER);
+		ImageIcon img = new ImageIcon("./ì´ë¯¸ì§€ ë¶ˆëŸ¬ì˜¬ DBê²½ë¡œ");
 		
-//		//ÈÄ¿¡ ¾×¼ÇÃ³¸®
+//		//í›„ì— ì•¡ì…˜ì²˜ë¦¬
 //		lblImg.setIcon(img);
 //		lblGuide.setText("");
 	
-		btnOK = new JButton("È®ÀÎ");
-		btnCancel = new JButton("Ãë¼Ò");
+		btnOK = new JButton("í™•ì¸");
+		btnCancel = new JButton("ì·¨ì†Œ");
 		
 		panelMain = new JPanel();
+		panelMain.setLayout(new GridLayout(1, 2,10,10));
 		panel01 = new JPanel();
+		panel01.setLayout(new BorderLayout());
 		panel02 = new JPanel();
+		panel02.setLayout(new BorderLayout());
 		panel03 = new JPanel();
 		
-		panel01.add(lblGuide); 
-		panel01.add(lblImg);
-		panel01.add(panel03);
+		panel01.add(lblGuide, BorderLayout.NORTH); 
+		panel01.add(lblImg, BorderLayout.CENTER);
+		panel01.add(panel03,BorderLayout.SOUTH);
+		
 		
 		panel03.add(btnOK);
 		panel03.add(btnCancel);
 		
-		panel02.add(lblTitle);
-		panel02.add(jsp);
+		panel02.add(lblTitle, BorderLayout.NORTH);
+		panel02.add(jsp, BorderLayout.CENTER);
 		
 		panelMain.add(panel01);
 		panelMain.add(panel02);
+		
+		add(panelMain);
+		
 		
 		
 	}
