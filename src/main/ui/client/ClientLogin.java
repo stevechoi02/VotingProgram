@@ -14,10 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/*
- * 사용자 어플리케이션 초기화면
- */
-
 
 public class ClientLogin extends JPanel implements ActionListener {
 	/*
@@ -40,18 +36,10 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 	private JComboBox<String> cbRegion = new JComboBox<>(location);
 
-	private JPanel panelMain, panel01, panel02;
+	public JPanel panelMain, panel01, panel02;
 
 	public ClientLogin() {
-
-		//setTitle("선거관리 프로그램 : 사용자용");
-		setSize(600,400);
-		/*
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);//윈도우 프레임 중앙 위치
-		setResizable(false);//사이즈 조절 불가 설정
-		 */
-		
+		setSize(600,400);		
 		lblTitle = new JLabel("투표자 개인정보 입력");
 		lblTitle.setFont(new Font("Serif",Font.BOLD|Font.ITALIC,30));
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -104,20 +92,15 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 
 		panelMain.add(panel01, BorderLayout.NORTH);
-		panelMain.add(panel01, BorderLayout.SOUTH);
+		panelMain.add(panel02, BorderLayout.CENTER);
+		setLayout(new BorderLayout());
+		add(panelMain);
 
 		//pack();
 		setVisible(true);
 
 
-	}//생성자
-/*
-	public static void main(String[] args) {
-
-		new ClientLogin();
-
-	}//main
-*/
+	}//�깮�꽦�옄
 	@Override
 	public void actionPerformed(ActionEvent e) {
 

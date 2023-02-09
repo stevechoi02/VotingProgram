@@ -2,6 +2,7 @@ package main.ui.client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,7 +21,7 @@ public class ClientElec extends JPanel {
 	
 	private JButton btnOK, btnCancel;
 	
-	private String[] tableName = {"±âÈ£", "ÀÌ¸§", "³¯Â¥", "ÅõÇ¥ ¿©ºÎ"};
+	private String[] tableName = {"æ¹²ê³ Â˜", "ÂëŒ€Â„", "Â‚ï§Âœ", "ÂˆÑ‹Â‘Âœ Â—Ñ‰Â€"};
 	private String[] longList;
 	
 	//private JComboBox cbList = new JComboBox(longList);
@@ -35,37 +36,46 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
-		setSize(1000,600);
-		setVisible(true);
-		lblTitle = new JLabel("¼±°Å ¸ñ·Ï");
-		lblGuide = new JLabel("¼±°Å ¸ñ·Ï¿¡¼­ ¼±ÅÃÇØÁÖ¼¼¿ä.");
+		lblTitle = new JLabel("Â„å«„ ï§â‘¸Â");
+		lblTitle.setHorizontalAlignment(JLabel.CENTER);
+		lblGuide = new JLabel("Â„å«„ ï§â‘¸ÂÂ—ÂÂ„Âœ Â„ÂƒÂÂ•ëŒï¼œÂ„ëª„ÂšÂ”.");
+		lblGuide.setHorizontalAlignment(JLabel.CENTER);
+
 		lblImg = new JLabel();
-		ImageIcon img = new ImageIcon("./ÀÌ¹ÌÁö ºÒ·¯¿Ã DB°æ·Î");
+		lblImg.setHorizontalAlignment(JLabel.CENTER);
+		ImageIcon img = new ImageIcon("./ÂëŒ€ï¿½ï§Â€ éºÂˆÂŸÑŠÂ˜ DBå¯ƒìˆÂœ");
 		
-//		//ÈÄ¿¡ ¾×¼ÇÃ³¸®
+//		//Â›Â„Â—Â Â•â‰ªÂ…Â˜ï§£Â˜ç”±
 //		lblImg.setIcon(img);
 //		lblGuide.setText("");
 	
-		btnOK = new JButton("È®ÀÎ");
-		btnCancel = new JButton("Ãë¼Ò");
+		btnOK = new JButton("Â™Â•Â");
+		btnCancel = new JButton("ç—â‘¥Â†ÂŒ");
 		
 		panelMain = new JPanel();
+		panelMain.setLayout(new GridLayout(1, 2,10,10));
 		panel01 = new JPanel();
+		panel01.setLayout(new BorderLayout());
 		panel02 = new JPanel();
+		panel02.setLayout(new BorderLayout());
 		panel03 = new JPanel();
 		
-		panel01.add(lblGuide); 
-		panel01.add(lblImg);
-		panel01.add(panel03);
+		panel01.add(lblGuide, BorderLayout.NORTH); 
+		panel01.add(lblImg, BorderLayout.CENTER);
+		panel01.add(panel03,BorderLayout.SOUTH);
+		
 		
 		panel03.add(btnOK);
 		panel03.add(btnCancel);
 		
-		panel02.add(lblTitle);
-		panel02.add(jsp);
+		panel02.add(lblTitle, BorderLayout.NORTH);
+		panel02.add(jsp, BorderLayout.CENTER);
 		
 		panelMain.add(panel01);
 		panelMain.add(panel02);
+		
+		add(panelMain);
+		
 		
 		
 	}
