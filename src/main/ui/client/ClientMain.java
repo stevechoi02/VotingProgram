@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 /**
  * ClientMain 클래스
  */
-public class ClientMain extends JFrame {
+public class ClientMain extends JPanel {
     GridBagLayout gbl;
     JPanel vote;
 
@@ -24,9 +24,8 @@ public class ClientMain extends JFrame {
      * ClientMain 생성자
      */
     public ClientMain() {
-		super("메인 ui");//프레임 제목
+		//프레임 제목
 		setSize(1000,600);//실행했을때 켜지는 컨테이너 크기 설정
-		setVisible(true);
 		
 		setLayout((LayoutManager) new FlowLayout(FlowLayout.CENTER,20,30));
 		
@@ -71,10 +70,10 @@ public class ClientMain extends JFrame {
      *
      * @param args the input arguments
      */
-    public static void main(String[] args) {
-	 ClientMain m= new ClientMain();
-	m.setDefaultCloseOperation(EXIT_ON_CLOSE);
+/*    public static void main(String[] args) {
+	 ClientMain m= new ClientMain();*/
+
 	
-}
+
 
 }

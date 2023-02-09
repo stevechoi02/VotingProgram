@@ -35,6 +35,8 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
+		setSize(1000,600);
+		setVisible(true);
 		lblTitle = new JLabel("선거 목록");
 		lblGuide = new JLabel("선거 목록에서 선택해주세요.");
 		lblImg = new JLabel();

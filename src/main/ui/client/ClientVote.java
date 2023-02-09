@@ -37,7 +37,7 @@ class ClientVoteImage extends JPanel{
 /**
  * The type Client vote.
  */
-public class ClientVote extends JFrame {
+public class ClientVote extends JPanel {
     private JLabel lblTitle;
     private ClientVoteImage pnlCand;
     private JButton btnOk, btnCancel;
@@ -50,6 +50,8 @@ public class ClientVote extends JFrame {
         setLayout(new BorderLayout());
         lblTitle = new JLabel(Election);
         pnlCand = new ClientVoteImage();
+        btnOk = new JButton("ok");
+        btnCancel = new JButton("cancel");
 
         add(lblTitle,BorderLayout.NORTH);
         add(pnlCand,BorderLayout.WEST);
@@ -60,6 +62,7 @@ public class ClientVote extends JFrame {
         buttonPane.add(btnOk);
         buttonPane.add(btnCancel);
 
+        add(buttonPane);
     }
 
     public ClientVoteImage getPnlCand(){
