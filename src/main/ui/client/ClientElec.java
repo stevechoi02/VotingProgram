@@ -21,7 +21,7 @@ public class ClientElec extends JPanel {
 	
 	private JButton btnOK, btnCancel;
 	
-	private String[] tableName = {"기호", "이름", "날짜", "투표 여부"};
+	private String[] tableName = {"湲고", "대", "吏", "ы щ"};
 	private String[] longList;
 	
 	//private JComboBox cbList = new JComboBox(longList);
@@ -36,20 +36,21 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
-		lblTitle = new JLabel("선거 목록");
+		lblTitle = new JLabel("嫄 紐⑸");
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
-		lblGuide = new JLabel("선거 목록에서 선택해주세요.");
+		lblGuide = new JLabel("嫄 紐⑸ 댁＜몄.");
 		lblGuide.setHorizontalAlignment(JLabel.CENTER);
+
 		lblImg = new JLabel();
 		lblImg.setHorizontalAlignment(JLabel.CENTER);
-		ImageIcon img = new ImageIcon("./이미지 불러올 DB경로");
+		ImageIcon img = new ImageIcon("./대�吏 遺ъ DB寃쎈");
 		
-//		//후에 액션처리
+//		// ≪泥由
 //		lblImg.setIcon(img);
 //		lblGuide.setText("");
 	
-		btnOK = new JButton("확인");
-		btnCancel = new JButton("취소");
+		btnOK = new JButton("");
+		btnCancel = new JButton("痍⑥");
 		
 		panelMain = new JPanel();
 		panelMain.setLayout(new GridLayout(1, 2,10,10));
