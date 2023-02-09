@@ -38,7 +38,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 	private String location[] = {"","서울특별시","경기도","강원도","충청도",
 			"전라도","경상도","등등"};
 
-	private JComboBox<String> cbRegion = new JComboBox(location);
+	private JComboBox<String> cbRegion = new JComboBox<>(location);
 
 	private JPanel panelMain, panel01, panel02;
 
@@ -107,7 +107,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 		panelMain.add(panel01, BorderLayout.SOUTH);
 
 		//pack();
-		//setVisible(true);
+		setVisible(true);
 
 
 	}//생성자
