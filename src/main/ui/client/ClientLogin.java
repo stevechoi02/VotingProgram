@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /*
- * 사용자 어플리케이션 초기화면
+ * �궗�슜�옄 �뼱�뵆由ъ��씠�뀡 珥덇린�솕硫�
  */
 
 
@@ -38,18 +38,19 @@ public class ClientLogin extends JPanel implements ActionListener {
 	private String location[] = {"","서울특별시","경기도","강원도","충청도",
 			"전라도","경상도","등등"};
 
-	private JComboBox<String> cbRegion = new JComboBox<>(location);
+	private JComboBox<String> cbRegion = new JComboBox(location);
 
-	private JPanel panelMain, panel01, panel02;
+	public JPanel panelMain, panel01, panel02;
 
 	public ClientLogin() {
-
-		//setTitle("선거관리 프로그램 : 사용자용");
 		setSize(600,400);
+
+		//setTitle("�꽑嫄곌�由� �봽濡쒓렇�옩 : �궗�슜�옄�슜");
+		
 		/*
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);//윈도우 프레임 중앙 위치
-		setResizable(false);//사이즈 조절 불가 설정
+		setLocationRelativeTo(null);//�쐢�룄�슦 �봽�젅�엫 以묒븰 �쐞移�
+		setResizable(false);//�궗�씠利� 議곗젅 遺덇� �꽕�젙
 		 */
 		
 		lblTitle = new JLabel("투표자 개인정보 입력");
@@ -73,6 +74,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 		btnCancel.addActionListener(this);
 		
 		panelMain = new JPanel();
+		panelMain.setLayout(new BorderLayout());
 
 		panel01 = new JPanel();
 		panel01.add(lblTitle);
@@ -104,13 +106,16 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 
 		panelMain.add(panel01, BorderLayout.NORTH);
-		panelMain.add(panel01, BorderLayout.SOUTH);
+		panelMain.add(panel02, BorderLayout.CENTER);
+		
+		setLayout(new BorderLayout());
+		add(panelMain);
 
 		//pack();
-		setVisible(true);
+		//setVisible(true);
 
 
-	}//생성자
+	}//�깮�꽦�옄
 /*
 	public static void main(String[] args) {
 
