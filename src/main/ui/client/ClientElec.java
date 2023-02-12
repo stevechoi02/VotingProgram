@@ -1,7 +1,8 @@
-package main.ui.client;
+	package main.ui.client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,11 +36,12 @@ public class ClientElec extends JPanel {
 	
 	
 	public ClientElec() {
-		setSize(1000,600);
-		setVisible(true);
 		lblTitle = new JLabel("선거 목록");
+		lblTitle.setHorizontalAlignment(JLabel.CENTER);
 		lblGuide = new JLabel("선거 목록에서 선택해주세요.");
+		lblGuide.setHorizontalAlignment(JLabel.CENTER);
 		lblImg = new JLabel();
+		lblImg.setHorizontalAlignment(JLabel.CENTER);
 		ImageIcon img = new ImageIcon("./이미지 불러올 DB경로");
 		
 //		//후에 액션처리
@@ -50,24 +52,35 @@ public class ClientElec extends JPanel {
 		btnCancel = new JButton("취소");
 		
 		panelMain = new JPanel();
+		panelMain.setLayout(new GridLayout(1, 2,10,10));
 		panel01 = new JPanel();
+		panel01.setLayout(new BorderLayout());
 		panel02 = new JPanel();
+		panel02.setLayout(new BorderLayout());
 		panel03 = new JPanel();
 		
-		panel01.add(lblGuide); 
-		panel01.add(lblImg);
-		panel01.add(panel03);
+		panel01.add(lblGuide, BorderLayout.NORTH); 
+		panel01.add(lblImg, BorderLayout.CENTER);
+		panel01.add(panel03,BorderLayout.SOUTH);
+		
 		
 		panel03.add(btnOK);
 		panel03.add(btnCancel);
 		
-		panel02.add(lblTitle);
-		panel02.add(jsp);
+		panel02.add(lblTitle, BorderLayout.NORTH);
+		panel02.add(jsp, BorderLayout.CENTER);
 		
 		panelMain.add(panel01);
 		panelMain.add(panel02);
 		
+		add(panelMain);
+		
+		
+		
+		
 		
 	}
+	
+	
 
 }
