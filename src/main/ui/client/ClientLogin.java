@@ -1,27 +1,33 @@
 package main.ui.client;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import main.dao.ClientDAO;
+import main.ui.server.UserJDialogGUI;
 
 
 public class ClientLogin extends JPanel implements ActionListener {
 
 	private JLabel lblTitle;
-	private JLabel lblName, lblPswd, lblRegion;
+	private JLabel lblName, lblPswd;
 
-	private JTextField txtName, txtPswd;
+	public JTextField txtName;
+	public JTextField txtPswd;
 
 	private JButton btnOK, btnCancel;
 
-	private String location[] = {"","서울특별시","경기도","강원도","충청도",
-			"전라도","경상도","등등"};
-
-	private JComboBox<String> cbRegion = new JComboBox(location);
 
 	public JPanel panelMain, panel01, panel02;
+	
+	ClientDAO dao = new ClientDAO();
 
 	public ClientLogin() {
 		setSize(600,400);
@@ -32,12 +38,10 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 		lblName = new JLabel("이      름 : ");
 		lblPswd = new JLabel("주민번호 : ");
-		lblRegion = new JLabel("지      역 : ");
 
 		txtName = new JTextField(15);
 		txtPswd = new JTextField(15);
 
-		cbRegion.setSelectedIndex(0);
 
 		btnOK = new JButton("확 인");
 		btnCancel = new JButton("취 소");
@@ -52,19 +56,15 @@ public class ClientLogin extends JPanel implements ActionListener {
 		panel02.setLayout(null);
 		panel02.add(lblName);
 		panel02.add(lblPswd);
-		panel02.add(lblRegion);
 
 		lblName.setBounds(125, 50,400,20);
 		lblPswd.setBounds(125, 100,400,20);
-		lblRegion.setBounds(125, 150,400,20);
 
 		panel02.add(txtName);
 		panel02.add(txtPswd);
-		panel02.add(cbRegion);
 
 		txtName.setBounds(200, 50, 300, 20);
 		txtPswd.setBounds(200, 100, 300, 20);
-		cbRegion.setBounds(200, 150, 300, 20);
 
 		btnOK.addActionListener(this);
 
@@ -85,7 +85,15 @@ public class ClientLogin extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == btnOK){
-				ClientCards.controller.getView("Main");
+				if(dao.insertUserData(this)>0) {
+					UserJDialogGUI.messageBox(this, "개인정보 확인 및 저장이 완료되었습니다.");
+					ClientCards.controller.getView("Main");
+				}else if(dao.existUserData(this)) {
+					UserJDialogGUI.messageBox(this, "이미 저장 및 투표한 사용자입니다.");
+					ClientCards.controller.getView("Main");
+				}else {
+					UserJDialogGUI.messageBox(this, "잘못된 사용자입니다.");
+				}
 			}
 			if(e.getSource() == btnCancel){
 
