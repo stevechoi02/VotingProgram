@@ -1,29 +1,19 @@
 package main.ui.client;
 
-import com.sun.security.ntlm.Client;
-
 import javax.swing.*;
 import java.awt.*;
 
-public class ClientFrame extends JFrame implements SwapPanel{
-    private CardLayout layout;
-    JPanel cards;
+public class ClientFrame extends JFrame{
+    public static ClientCards cCards;
 
     ClientFrame(){
-        cards = new JPanel(new CardLayout());
-
-        setLayout(layout);
         setSize(1000,600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-
-        ClientLogin cLogin = new ClientLogin();
-        ClientVote cVote = new ClientVote("aa");
-        ClientElec cElec = new ClientElec();
-        ClientMain cMain = new ClientMain();
-
-        add(cMain);
-
-        CardLayout cards = new CardLayout();
+        cCards = new ClientCards();
+        setLayout(new BorderLayout());
+        add(cCards);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -32,8 +22,4 @@ public class ClientFrame extends JFrame implements SwapPanel{
         new ClientFrame();
     }
 
-    @Override
-    public void swapPanel(String panel) {
-
-    }
 }
