@@ -2,6 +2,8 @@ package main.ui.client;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -37,7 +39,7 @@ class ClientVoteImage extends JPanel{
 /**
  * The type Client vote.
  */
-public class ClientVote extends JPanel {
+public class ClientVote extends JPanel implements ActionListener {
     private JLabel lblTitle;
     private ClientVoteImage pnlCand;
     private JButton btnOk, btnCancel;
@@ -50,8 +52,9 @@ public class ClientVote extends JPanel {
         setLayout(new BorderLayout());
         lblTitle = new JLabel(Election);
         pnlCand = new ClientVoteImage();
-        btnOk = new JButton("ok");
-        btnCancel = new JButton("cancel");
+        btnOk = new JButton("확인");
+        btnCancel = new JButton("취소");
+        btnCancel.addActionListener(this);
 
         add(lblTitle,BorderLayout.NORTH);
         add(pnlCand,BorderLayout.WEST);
@@ -69,4 +72,10 @@ public class ClientVote extends JPanel {
         return pnlCand;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource()==btnCancel){
+            ClientCards.controller.getView("Main");
+        }
+    }
 }

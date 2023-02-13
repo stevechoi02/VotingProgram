@@ -1,32 +1,13 @@
 package main.ui.client;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-/*
- * �궗�슜�옄 �뼱�뵆由ъ��씠�뀡 珥덇린�솕硫�
- */
+import javax.swing.*;
 
 
 public class ClientLogin extends JPanel implements ActionListener {
-	/*
-	private JLabel lblTitle, lblName, lblPswd, lblRegion;
-    private JTextField txtName;
-    private JTextField txtPswd;
-    private JComboBox<String> cbRegion;
-    private JButton btnOk, btnCancel;
-	 */
 
 	private JLabel lblTitle;
 	private JLabel lblName, lblPswd, lblRegion;
@@ -45,14 +26,6 @@ public class ClientLogin extends JPanel implements ActionListener {
 	public ClientLogin() {
 		setSize(600,400);
 
-		//setTitle("�꽑嫄곌�由� �봽濡쒓렇�옩 : �궗�슜�옄�슜");
-		
-		/*
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);//�쐢�룄�슦 �봽�젅�엫 以묒븰 �쐞移�
-		setResizable(false);//�궗�씠利� 議곗젅 遺덇� �꽕�젙
-		 */
-		
 		lblTitle = new JLabel("투표자 개인정보 입력");
 		lblTitle.setFont(new Font("Serif",Font.BOLD|Font.ITALIC,30));
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -68,11 +41,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 		btnOK = new JButton("확 인");
 		btnCancel = new JButton("취 소");
-		//btnOK.setPreferredSize(new Dimension(80,50));
-		//btnCancel.setPreferredSize(new Dimension(80,50));
-		btnOK.addActionListener(this);
-		btnCancel.addActionListener(this);
-		
+
 		panelMain = new JPanel();
 		panelMain.setLayout(new BorderLayout());
 
@@ -97,8 +66,8 @@ public class ClientLogin extends JPanel implements ActionListener {
 		txtPswd.setBounds(200, 100, 300, 20);
 		cbRegion.setBounds(200, 150, 300, 20);
 
-		//panel03 = new JPanel();
-		//panel03.setLayout(null);
+		btnOK.addActionListener(this);
+
 		panel02.add(btnOK);
 		panel02.add(btnCancel);
 		btnOK.setBounds(200, 200, 80, 50);
@@ -107,34 +76,19 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 		panelMain.add(panel01, BorderLayout.NORTH);
 		panelMain.add(panel02, BorderLayout.CENTER);
-		
+
 		setLayout(new BorderLayout());
 		add(panelMain);
 
-		//pack();
-		//setVisible(true);
-
-
-	}//�깮�꽦�옄
-/*
-	public static void main(String[] args) {
-
-		new ClientLogin();
-
-	}//main
-*/
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-		if(e.getSource() == btnOK) {
-			//new ClientPage2();
-			//new Choose01();
-			setVisible(false);
-			//System.out.println("test");
-		}else if(e.getSource() == btnCancel){
-			//System.out.println("test btnCancel");
-//			dispose();
-		}
 	}
 
-}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == btnOK){
+				ClientCards.controller.getView("Main");
+			}
+			if(e.getSource() == btnCancel){
+
+			}
+		}
+	}
