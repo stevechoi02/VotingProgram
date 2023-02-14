@@ -6,8 +6,15 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import main.dao.ServerDAO;
 
 // 서버 후보 추가
 public class ServerCand extends JPanel implements ActionListener {
@@ -18,19 +25,22 @@ public class ServerCand extends JPanel implements ActionListener {
 	
 	private JButton btnCreate, btnEdit, btnDelete, btnCancel;
 	
-	private String[] tableName = {"기호", "이름", "나이", "사진등록여부"};
-	private String[] comboName = {"선거1", "선거2", "선거3"};
-	private JComboBox<String> cbElec = new JComboBox(comboName);
+	private String[] tableName = {"기호", "이름", "각오", "사진등록여부"};
+	private String[] comboName;
+	
 	
 	DefaultTableModel dt = new DefaultTableModel(tableName, 0);
 	JTable jt = new JTable(dt);
 	JScrollPane jsp = new JScrollPane(jt);
 	
+	ServerDAO dao = new ServerDAO(); 
+	
 	JPanel panelMain;
 	JPanel panel01,panel02,panel03;
 	
 	ServerCand(){
-		
+		comboName = dao.listElec(dt);
+		JComboBox<String> cbElec = new JComboBox(comboName);
 		lblTitle = new JLabel("후보 관리");
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
 		lblTitle.setFont(new Font("Serif",Font.BOLD,30));

@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import main.dao.ServerElecDAO;
+import main.dao.ServerDAO;
 
 public class ServerElec extends JPanel implements ActionListener{
 	
@@ -32,7 +32,7 @@ public class ServerElec extends JPanel implements ActionListener{
 	JPanel panelMain;
 	JPanel panel01,panel02;
 	
-	ServerElecDAO dao = new ServerElecDAO();
+	ServerDAO dao = new ServerDAO();
 	
 	public ServerElec() {
 		
