@@ -41,6 +41,7 @@ public class ServerCand extends JPanel implements ActionListener {
 	ServerCand(){
 		comboName = dao.listElec(dt);
 		JComboBox<String> cbElec = new JComboBox(comboName);
+		
 		lblTitle = new JLabel("후보 관리");
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
 		lblTitle.setFont(new Font("Serif",Font.BOLD,30));
