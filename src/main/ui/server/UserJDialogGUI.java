@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import main.dao.ServerElecDAO;
+import main.dao.ServerDAO;
 
 public class UserJDialogGUI extends JDialog implements ActionListener{
 	
@@ -38,7 +38,7 @@ public class UserJDialogGUI extends JDialog implements ActionListener{
 	ServerElec sElec;
 	ServerCand sCand;
 	
-	ServerElecDAO dao = new ServerElecDAO();
+	ServerDAO dao = new ServerDAO();
 
 	public UserJDialogGUI(ServerElec sElec, String name) {
 		setTitle("선거 추가/수정");

@@ -8,8 +8,9 @@ public class ServerFrame extends JFrame {
 
         ServerMain sMain = new ServerMain();
         ServerElec sElec = new ServerElec();
+        ServerCand sCand = new ServerCand();
 
-        add(sElec);
+        add(sCand);
 
         setVisible(true);
     }
