@@ -8,10 +8,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import main.dao.ServerElecDAO;
 
 public class ServerElec extends JPanel implements ActionListener{
 	
@@ -20,7 +23,7 @@ public class ServerElec extends JPanel implements ActionListener{
 	
 	private JButton btnCreate, btnEdit, btnDelete, btnCancel;
 	
-	private String[] tableName = {"기호", "이름", "시작 시간", "마감 시간"};
+	private String[] tableName = {"번호", "이름", "시작 날짜", "마감 날짜"};
 	
 	DefaultTableModel dt = new DefaultTableModel(tableName, 0);
 	JTable jt = new JTable(dt);
@@ -29,7 +32,10 @@ public class ServerElec extends JPanel implements ActionListener{
 	JPanel panelMain;
 	JPanel panel01,panel02;
 	
+	ServerElecDAO dao = new ServerElecDAO();
+	
 	public ServerElec() {
+		
 		lblTitle = new JLabel("선거 관리");
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
 		lblTitle.setFont(new Font("Serif",Font.BOLD,30));
@@ -70,6 +76,12 @@ public class ServerElec extends JPanel implements ActionListener{
 		btnDelete.addActionListener(this);
 		btnCancel.addActionListener(this);
 		
+		dao.serverElecSelectAll(dt);
+		
+		if(dt.getRowCount()>0) {
+			jt.setRowSelectionInterval(0, 0);
+		}
+		
 	}//생성자
 
 	@Override
@@ -79,9 +91,19 @@ public class ServerElec extends JPanel implements ActionListener{
 		}else if(e.getSource() == btnEdit) {
 			new UserJDialogGUI(this, "수  정");
 		}else if(e.getSource() == btnDelete) {
-			UserJDialogGUI.massageConfirmBox(this, "정말 삭제하시겠습니까?");
+			int row =jt.getSelectedRow();
+			int index = (int) jt.getValueAt(row, 0);
+			if(UserJDialogGUI.massageConfirmBox(this, "정말 삭제하시겠습니까?")==0) {
+				if(dao.elecDelete(index)>0) {
+					dao.serverElecSelectAll(dt);
+					if(dt.getRowCount()>0) {
+						jt.setRowSelectionInterval(0, 0);
+					}
+				}
+			}
 		}else if(e.getSource() == btnCancel) {
-			
+			dao.conClose();
+			System.exit(0);
 		}
 		
 	}

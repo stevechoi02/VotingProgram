@@ -7,8 +7,9 @@ public class ServerFrame extends JFrame {
         setSize(1000,600);
 
         ServerMain sMain = new ServerMain();
+        ServerElec sElec = new ServerElec();
 
-        add(sMain);
+        add(sElec);
 
         setVisible(true);
     }
