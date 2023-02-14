@@ -28,6 +28,9 @@ public class ClientCards extends JPanel{
         controller.addView(cVote, "Vote");
 
         controller.getView("Login");
+        
+        ClientElec cElec1 = new ClientElec();
+        ClientLogin cLogin2 = new ClientLogin();
 
         /*JPanel controls = new JPanel();
         JButton btnPrev = new JButton("<");
