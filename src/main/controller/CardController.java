@@ -1,14 +1,10 @@
-package main.controller.ClientUI;
-
-import main.controller.ViewController;
+package main.controller;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class ClientMainController extends ViewController {
-
-    public static final String HOME = "home";
+public class CardController extends ViewController {
 
     private Component currentView = null;
     private List<Component> views;
@@ -17,7 +13,7 @@ public class ClientMainController extends ViewController {
     private Container parent;
     private CardLayout cardLayout;
 
-    public ClientMainController(Container parent, CardLayout cardLayout){
+    public CardController(Container parent, CardLayout cardLayout){
         this.cardLayout=cardLayout;
         this.parent=parent;
         views = new ArrayList<>(25);
@@ -45,12 +41,6 @@ public class ClientMainController extends ViewController {
     }
 
     @Override
-    public void goHome() {
-        currentView = null;
-        getCardLayout().show(getParent(), HOME);
-    }
-
-    @Override
     public void nextView() {
         if (views.size() > 0) {
             String name = null;
@@ -75,7 +65,6 @@ public class ClientMainController extends ViewController {
         if(validate(mapNames.get(currentView))){
             currentView = getKeyValue(mapNames, name);
             getCardLayout().show(getParent(), name);
-
         }
     }
 

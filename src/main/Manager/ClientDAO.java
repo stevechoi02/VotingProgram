@@ -1,4 +1,4 @@
-package main.dao;
+package main.Manager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +21,6 @@ public class ClientDAO {//JDBC
    String sql = null;
 
    public ClientDAO() {
-
       try {
          Class.forName(driver);
          conn=DriverManager.getConnection(url, user, password);
@@ -65,9 +64,20 @@ public class ClientDAO {//JDBC
       return re;
    }
 
+   public void insertCand(){
+
+   }
+
+   public void editCand(String name){
+
+   }
+
+   public String getCandidateName(){
+      return "";
+   }
+
    //로그인 화면 이미 가입한 사람 분별
    public boolean existUserData(ClientLogin cLogin) {
-      // TODO Auto-generated method stub
       boolean re = false;
 
 
