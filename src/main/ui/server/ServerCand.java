@@ -1,4 +1,7 @@
+/*
 package main.ui.server;
+
+//import main.Manager.UserJDialogGUI;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -94,7 +97,8 @@ public class ServerCand extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		/*if(e.getSource() == btnCreate) {
+		*/
+/*if(e.getSource() == btnCreate) {
 			new UserJDialogGUI(this, "추 가");
 		}else if(e.getSource() == btnEdit) {
 			new UserJDialogGUI(this, "수  정");
@@ -102,6 +106,7 @@ public class ServerCand extends JPanel implements ActionListener {
 			UserJDialogGUI.massageConfirmBox(this, "정말 삭제하시겠습니까?");
 		}else if(e.getSource() == btnCancel) {
 			
-		}*/
+		}
 	}
 }
+*/
