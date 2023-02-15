@@ -34,6 +34,7 @@ public class ServerElec extends JPanel implements ActionListener{
 	
 	ServerDAO dao = new ServerDAO();
 	
+	
 	public ServerElec() {
 		
 		lblTitle = new JLabel("선거 관리");

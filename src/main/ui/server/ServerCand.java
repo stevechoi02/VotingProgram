@@ -34,13 +34,15 @@ public class ServerCand extends JPanel implements ActionListener {
 	JScrollPane jsp = new JScrollPane(jt);
 	
 	ServerDAO dao = new ServerDAO(); 
+	ServerElec sElec = new ServerElec();
 	
 	JPanel panelMain;
 	JPanel panel01,panel02,panel03;
 	
 	ServerCand(){
-		comboName = dao.listElec(dt);
-		JComboBox<String> cbElec = new JComboBox(comboName);
+		dao.listElec(comboName);
+		
+		JComboBox<String> cbElec = new JComboBox(tableName);
 		
 		lblTitle = new JLabel("후보 관리");
 		lblTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -92,7 +94,7 @@ public class ServerCand extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == btnCreate) {
+		/*if(e.getSource() == btnCreate) {
 			new UserJDialogGUI(this, "추 가");
 		}else if(e.getSource() == btnEdit) {
 			new UserJDialogGUI(this, "수  정");
@@ -100,6 +102,6 @@ public class ServerCand extends JPanel implements ActionListener {
 			UserJDialogGUI.massageConfirmBox(this, "정말 삭제하시겠습니까?");
 		}else if(e.getSource() == btnCancel) {
 			
-		}
+		}*/
 	}
 }
