@@ -1,5 +1,6 @@
 package main.dao;
 
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -21,8 +22,8 @@ public class ServerDAO {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	//String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
-	String user = "vote";
-	String password = "56789";
+	String user = "elec";
+	String password = "456789";
 	String sql = null;
 	private String[] data;
 
@@ -80,24 +81,31 @@ public class ServerDAO {
 		}finally {
 			dbClose();
 		}
+		
+		
 	}
 
 	public int elecInsert(ElecJDialogGUI user) {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end)"
-					+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE('YYYY-MM-DD')");
+			pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_img)"
+					+ " values(eIndex_seq.nextval,?, sysdate,?,?)");
 			pstmt.setString(1, user.txtName.getText().trim());
 			pstmt.setString(2, user.txtEndDate.getText().trim());
-
-			System.out.println(user.txtEndDate.getText().trim());
+			
+			FileInputStream fin=new FileInputStream(user.txtImg.getText());
+			pstmt.setBinaryStream(3, fin, fin.available());  
 			
 			re = pstmt.executeUpdate();
+			fin.close();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
+			
 			dbClose();
 		}
+		
+		
 		
 		return re;
 	}
@@ -187,13 +195,13 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand)"
-					+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'))");
-			pstmt.setString(1, user.txtName.getText().trim());
-			pstmt.setString(2, user.txtEndDate.getText().trim());
-
-			System.out.println(user.txtEndDate.getText().trim());
-
+			pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName)"
+					+ "values(?,?,?,?)");
+			pstmt.setString(1, user.txtID.getText().trim());
+			pstmt.setString(2, user.txtName.getText().trim());
+			pstmt.setString(3, user.txtSent.getText().trim());
+			pstmt.setString(4, user.elecName);
+			
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -207,10 +215,12 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("update ServerElec set elec_name=?, elec_end=? where elec_Index=? ");
-			pstmt.setString(1, user.txtName.getText().trim());
-			pstmt.setString(2, user.txtEndDate.getText().trim());
-			pstmt.setInt(3, user.index);
+			pstmt=conn.prepareStatement("update ServerCand set cand_Index=?, cand_Name=?,cand_Sent=?"
+					+ " where Cand_ElecName=? ");
+			pstmt.setString(1, user.txtID.getText().trim());
+			pstmt.setString(2, user.txtName.getText().trim());
+			pstmt.setString(3, user.txtSent.getText());
+			pstmt.setString(4, user.elecName);
 
 
 			re = pstmt.executeUpdate();
@@ -221,13 +231,13 @@ public class ServerDAO {
 
 		return re;
 	}
-
-	public int candDelete(int index) {
+	//삭제 쿼리 수정해야함 2/15
+	public int candDelete(String elecName) {
 		int re=-1;
 
 		try {
 			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=? ");
-			pstmt.setInt(1, index);
+			pstmt.setString(1, elecName);
 
 
 			re = pstmt.executeUpdate();
