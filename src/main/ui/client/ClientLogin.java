@@ -1,17 +1,13 @@
 package main.ui.client;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import main.Manager.ClientDAO;
+import main.Manager.ElecJDialogGUI;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import main.dao.ClientDAO;
-import main.ui.server.UserJDialogGUI;
+import javax.swing.*;
 
 
 public class ClientLogin extends JPanel implements ActionListener {
@@ -24,9 +20,13 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 	private JButton btnOK, btnCancel;
 
+	private String location[] = {"","서울특별시","경기도","강원도","충청도",
+			"전라도","경상도","등등"};
+
+	private JComboBox<String> cbRegion = new JComboBox(location);
 
 	public JPanel panelMain, panel01, panel02;
-	
+
 	ClientDAO dao = new ClientDAO();
 
 	public ClientLogin() {
@@ -42,6 +42,7 @@ public class ClientLogin extends JPanel implements ActionListener {
 		txtName = new JTextField(15);
 		txtPswd = new JTextField(15);
 
+		cbRegion.setSelectedIndex(0);
 
 		btnOK = new JButton("확 인");
 		btnCancel = new JButton("취 소");
@@ -62,9 +63,11 @@ public class ClientLogin extends JPanel implements ActionListener {
 
 		panel02.add(txtName);
 		panel02.add(txtPswd);
+		panel02.add(cbRegion);
 
 		txtName.setBounds(200, 50, 300, 20);
 		txtPswd.setBounds(200, 100, 300, 20);
+		cbRegion.setBounds(200, 150, 300, 20);
 
 		btnOK.addActionListener(this);
 
@@ -85,14 +88,15 @@ public class ClientLogin extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == btnOK){
-				if(dao.insertUserData(this)>0) {
-					UserJDialogGUI.messageBox(this, "개인정보 확인 및 저장이 완료되었습니다.");
+//				if(dao.insertUserData(this)>0) {
+				if(true){
+					ElecJDialogGUI.messageBox(this, "개인정보 확인 및 저장이 완료되었습니다.");
 					ClientCards.controller.getView("Main");
 				}else if(dao.existUserData(this)) {
-					UserJDialogGUI.messageBox(this, "이미 저장 및 투표한 사용자입니다.");
+					ElecJDialogGUI.messageBox(this, "이미 저장 및 투표한 사용자입니다.");
 					ClientCards.controller.getView("Main");
 				}else {
-					UserJDialogGUI.messageBox(this, "잘못된 사용자입니다.");
+					ElecJDialogGUI.messageBox(this, "잘못된 사용자입니다.");
 				}
 			}
 			if(e.getSource() == btnCancel){

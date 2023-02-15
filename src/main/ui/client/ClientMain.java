@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  */
 public class ClientMain extends JPanel implements ActionListener{
     GridBagLayout gbl;
-    JPanel vote;
+    private JPanel vote;
 
 	private JPanel VoteBtn;
 
@@ -100,5 +100,15 @@ public class ClientMain extends JPanel implements ActionListener{
 		if(e.getSource() == btn4){
 			ClientCards.controller.getView("Login");
 		}
+	}
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame();
+		ClientMain cMain = new ClientMain();
+
+		frame.add(cMain);
+		frame.setSize(1000,800);
+		frame.validate();
+		frame.setVisible(true);
 	}
 }

@@ -1,3 +1,4 @@
+/*
 package main.ui.server;
 
 import java.awt.BorderLayout;
@@ -26,7 +27,7 @@ public class ServerElec extends JPanel implements ActionListener{
 	private String[] tableName = {"번호", "이름", "시작 날짜", "마감 날짜"};
 	
 	DefaultTableModel dt = new DefaultTableModel(tableName, 0);
-	JTable jt = new JTable(dt);
+	public JTable jt = new JTable(dt);
 	JScrollPane jsp = new JScrollPane(jt);
 	
 	JPanel panelMain;
@@ -78,6 +79,7 @@ public class ServerElec extends JPanel implements ActionListener{
 		btnCancel.addActionListener(this);
 		
 		dao.serverElecSelectAll(dt);
+
 		
 		if(dt.getRowCount()>0) {
 			jt.setRowSelectionInterval(0, 0);
@@ -112,3 +114,4 @@ public class ServerElec extends JPanel implements ActionListener{
 	
 	
 }
+*/

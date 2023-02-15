@@ -7,13 +7,13 @@ public class ClientFrame extends JFrame{
     public static ClientCards cCards;
 
     ClientFrame(){
-        setSize(1000,600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         cCards = new ClientCards();
         setLayout(new BorderLayout());
         add(cCards);
         setLocationRelativeTo(null);
+        pack();
         setVisible(true);
     }
 

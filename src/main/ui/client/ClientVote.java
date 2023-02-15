@@ -1,6 +1,7 @@
 package main.ui.client;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,73 +10,84 @@ import java.util.ArrayList;
 /**
  * The type Client vote image.
  */
-class ClientVoteImage extends JPanel{
-    //후보 리스트
-    private final ArrayList<JPanel> candidates = new ArrayList<>();
-
-    /**
-     * Instantiates a new Client vote image.
-     */
-    ClientVoteImage(){
-        //패널 사이즈, 레이아웃 설정
-        setSize(400,300);
-        setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-        setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
-        //패널에 후보패널 추가
-        for(JPanel candidate: candidates) add(candidate);
-    }
-
-    /**
-     * CandidatePanel를 후보 리스트에 추가
-     *
-     * @param panel the panel
-     */
-    public void addImage(JPanel panel){
-        candidates.add(panel);
-    }
-}
 
 /**
  * The type Client vote.
  */
 public class ClientVote extends JPanel implements ActionListener {
     private JLabel lblTitle;
-    private ClientVoteImage pnlCand;
     private JButton btnOk, btnCancel;
-
+    private final ArrayList<String> candidates = new ArrayList<>();
+    private static final ButtonGroup btnGroup = new ButtonGroup();
     /**
      * Instantiates a new Client vote.
      */
     public ClientVote(String Election){
-        setSize(600,400);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10,10));
+        JPanel labels = new JPanel(new GridLayout(2,3,3,3));
+        labels.setBorder(new LineBorder(Color.BLACK));
+        updateCandList();
+        for(String candidate:candidates){
+            labels.add(makeCandPanel(candidate));
+        }
+
+        labels.add(makeCandPanel("Test1"));
+        labels.add(makeCandPanel("Test2"));
+        labels.add(makeCandPanel("Test3"));
+
         lblTitle = new JLabel(Election);
-        pnlCand = new ClientVoteImage();
         btnOk = new JButton("확인");
         btnCancel = new JButton("취소");
         btnCancel.addActionListener(this);
 
         add(lblTitle,BorderLayout.NORTH);
-        add(pnlCand,BorderLayout.WEST);
+        add(labels, BorderLayout.CENTER);
 
         JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.PAGE_AXIS));
+        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.Y_AXIS));
         buttonPane.add(Box.createVerticalGlue());
         buttonPane.add(btnOk);
         buttonPane.add(btnCancel);
 
-        add(buttonPane);
+        add(buttonPane,BorderLayout.EAST);
     }
 
-    public ClientVoteImage getPnlCand(){
-        return pnlCand;
+    protected JComponent makeCandPanel(String candidate){
+        JPanel panel = new JPanel(new BorderLayout(5,5));
+        JLabel label = new JLabel(candidate);
+        JRadioButton btn = new JRadioButton();
+        btnGroup.add(btn);
+
+        panel.add(label,BorderLayout.CENTER);
+        panel.add(btn,BorderLayout.SOUTH);
+        return panel;
+    }
+
+    protected void updateCandList(){
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==btnCancel){
-            ClientCards.controller.getView("Main");
+            ClientCards.controller.getView("Election");
         }
     }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+
+        ClientVote cVote = new ClientVote("테스트 선거1");
+        frame.setContentPane(cVote);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        try {
+            frame.setLocationByPlatform(true);
+            frame.setMinimumSize(frame.getSize());
+        } catch(Throwable ignoreAndContinue) {
+        }
+
+        frame.setVisible(true);
+    }
+
 }

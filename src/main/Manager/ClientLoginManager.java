@@ -5,7 +5,20 @@ public class ClientLoginManager {
 
     }
 
-    public boolean validate(){
-        return true;
+    public boolean validate(String name){
+        boolean res = true;
+        if(name == "Login"){
+
+        }
+        if(name == "Main"){
+
+        }
+        if(name == "Vote"){
+
+        }
+        if(name == "Election"){
+
+        }
+        return res;
     }
 }
