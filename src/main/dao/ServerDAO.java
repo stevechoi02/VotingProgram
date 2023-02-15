@@ -139,26 +139,29 @@ public class ServerDAO {
 		return re;
 	}
 
-	public String[] listElec(DefaultTableModel dt) {
+	
+
+	public void listElec(String[] comboName) {
 		sql = "select elec_Name from ServerElec order by elec_Index asc";
-		
 		try {
 			
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
-			
-			
-			for(int i =1; i<dt.getRowCount();i++){
-				data[i]=rs.getString("elec_Name");
+			System.out.println(rs.getRow());
+			for(int i=0;i<rs.getRow();i++) {
+				data[i] = rs.getString(1);
 			}
+			
+			
 			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			dbClose();
 		}
-		return data;
-
+		
 	}
+
+
 
 }
