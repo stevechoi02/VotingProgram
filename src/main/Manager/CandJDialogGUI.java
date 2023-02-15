@@ -15,7 +15,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
 
     public int index;
     public String elecName;
-    
+    public int elecNum;
 
     JPanel pLabel;
     JPanel pField;
@@ -36,19 +36,23 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
 
     ServerDAO dao = new ServerDAO();
 
-    JTable table;
-    DefaultTableModel model;
+    JList<String> list;
+    DefaultListModel<String> model;
 
-    public CandJDialogGUI(DefaultTableModel model, JTable table, String name) {
+    public CandJDialogGUI(DefaultListModel<String> model, JList<String> list, String name, int elecNum) {
+        this.list = list;
+        this.model = model;
+        this.elecNum =elecNum;
+        this.elecName = dao.getElecNameByNum(elecNum);
 
         setTitle("후보자 추가/수정");
         this.model = model;
-        this.table = table;
+        this.list = list;
         
-        int row =table.getSelectedRow();
-        elecName = table.getValueAt(row, 1).toString();
+        int row =list.getSelectedIndex();
+        //elecName = list.getValueAt(row, 1).toString();
         
-        if(name.equals("선거 후보 등록")) {
+        if(name.equals("등록")) {
         	btnOK = new JButton("등록");
         }else {
         	btnOK = new JButton("수정");
@@ -97,48 +101,33 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
         JOptionPane.showMessageDialog((Component)obj, message);
     }
     public static int massageConfirmBox(Object obj, String message) {
-
-
-        int re = JOptionPane.showConfirmDialog(null,message,"데이터 삭제",JOptionPane.YES_NO_OPTION);
-        return re;
+        return JOptionPane.showConfirmDialog(null,message,"데이터 삭제",JOptionPane.YES_NO_OPTION);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String btnLabel = e.getActionCommand();
 
-        if(btnLabel.equals("등록")) {
-        	
-            if(dao.candInsert(this) >0) {
-                messageBox(this, "후보가 등록되었습니다.");
-                dispose();
-                //dao.serverElecSelectAll(model);
-
-                if(table.getRowCount()>0) {
-                    table.setRowSelectionInterval(0, 0);
+        switch (btnLabel) {
+            case "등록":
+                if (dao.candInsert(this) > 0) {
+                    messageBox(this, "후보가 등록되었습니다.");
+                    dispose();
+                    dao.serverCandSelectAll(model, elecNum);
                 }
-            }
-
-        }else if(btnLabel.equals("취소")) {
-            dispose();
-
-        }else if (btnLabel.equals("수정")) {
-            if(dao.candUpdate(this)>0) {
-                messageBox(this, "수정되었습니다.");
+                break;
+            case "취소":
                 dispose();
 
-                dao.serverElecSelectAll(model);
-                if(table.getRowCount()>0) {
-                    table.setRowSelectionInterval(0, 0);
+                break;
+            case "수정":
+                if (dao.candUpdate(this) > 0) {
+                    messageBox(this, "수정되었습니다.");
+                    dispose();
+                    dao.serverCandSelectAll(model, elecNum);
                 }
-            }
+                break;
         }
 
     }
-
-
-
-
-
-
 }

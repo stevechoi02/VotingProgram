@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import main.Manager.CandJDialogGUI;
@@ -22,8 +23,8 @@ public class ServerDAO {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	//String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
-	String user = "elec";
-	String password = "456789";
+	String user = "vote";
+	String password = "56789";
 	String sql = null;
 	private String[] data;
 
@@ -33,8 +34,7 @@ public class ServerDAO {
 	         conn=DriverManager.getConnection(url, user, password);
 	         
 
-	      }catch(ClassNotFoundException e) {e.printStackTrace();}
-	      catch(SQLException e) {e.printStackTrace();}
+	      }catch(ClassNotFoundException | SQLException e) {e.printStackTrace();}
 
 	}
 	
@@ -73,7 +73,6 @@ public class ServerDAO {
 						rs.getDate("elec_End")
 				};
 				dt.addRow(data);
-				
 			}
 			
 		}catch(Exception e) {
@@ -81,31 +80,26 @@ public class ServerDAO {
 		}finally {
 			dbClose();
 		}
-		
-		
 	}
 
 	public int elecInsert(ElecJDialogGUI user) {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_img)"
-					+ " values(eIndex_seq.nextval,?, sysdate,?,?)");
+			pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end,elec_img)"
+					+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'),?)");
 			pstmt.setString(1, user.txtName.getText().trim());
 			pstmt.setString(2, user.txtEndDate.getText().trim());
-			
+
 			FileInputStream fin=new FileInputStream(user.txtImg.getText());
-			pstmt.setBinaryStream(3, fin, fin.available());  
+			pstmt.setBinaryStream(3, fin, fin.available());
 			
 			re = pstmt.executeUpdate();
 			fin.close();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
-			
 			dbClose();
 		}
-		
-		
 		
 		return re;
 	}
@@ -118,8 +112,6 @@ public class ServerDAO {
 			pstmt.setString(1, user.txtName.getText().trim());
 			pstmt.setString(2, user.txtEndDate.getText().trim());
 			pstmt.setInt(3, user.index);
-			
-			
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -133,10 +125,9 @@ public class ServerDAO {
 		int re=-1;
 		
 		try {
-			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=? ");
+			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=?");
 			pstmt.setInt(1, index);
-			
-			
+
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -167,21 +158,16 @@ public class ServerDAO {
 
 	}
 
-	public void serverCandSelectAll(DefaultTableModel dt) {
-		sql = "select cand_Index, cand_Name, cand_Sent from ServerCand order by cand_Index asc";
+	public void serverCandSelectAll(DefaultListModel<String> dl, int elecNum) {
 		try {
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-			for(int i=0;i<dt.getRowCount();) {
-				dt.removeRow(0);
-			}
-			while(rs.next()) {
-				Object[] data= {
-						rs.getInt("cand_Index"),
-						rs.getString("cand_Name"),
-						rs.getString("cand_Sent")
-				};
-				dt.addRow(data);
+			pstmt=conn.prepareStatement("select cand_name, cand_Index from ServerCand where cand_elecnum=? order by cand_Index asc");
+			pstmt.setInt(1, elecNum);
+			rs = pstmt.executeQuery();
+			dl.clear();
+			while(rs.next()){
+				String name = rs.getString("cand_Name");
+				int num = rs.getInt("cand_Index");
+				dl.addElement("후보 #"+num+": "+name);
 			}
 
 		}catch(Exception e) {
@@ -195,13 +181,14 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName)"
-					+ "values(?,?,?,?)");
+			pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName, cand_ElecNum)"
+					+ "values(?,?,?,?,?)");
 			pstmt.setString(1, user.txtID.getText().trim());
 			pstmt.setString(2, user.txtName.getText().trim());
 			pstmt.setString(3, user.txtSent.getText().trim());
-			pstmt.setString(4, user.elecName);
-			
+			pstmt.setString(4,user.elecName);
+			pstmt.setInt(5, user.elecNum);
+
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -216,12 +203,11 @@ public class ServerDAO {
 
 		try {
 			pstmt=conn.prepareStatement("update ServerCand set cand_Index=?, cand_Name=?,cand_Sent=?"
-					+ " where Cand_ElecName=? ");
+					+ " where cand_elecnum=? ");
 			pstmt.setString(1, user.txtID.getText().trim());
 			pstmt.setString(2, user.txtName.getText().trim());
 			pstmt.setString(3, user.txtSent.getText());
-			pstmt.setString(4, user.elecName);
-
+			pstmt.setInt(4, user.elecNum);
 
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
@@ -232,14 +218,13 @@ public class ServerDAO {
 		return re;
 	}
 	//삭제 쿼리 수정해야함 2/15
-	public int candDelete(String elecName) {
+	public int candDelete(int candNum, int elecNum) {
 		int re=-1;
 
 		try {
-			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=? ");
-			pstmt.setString(1, elecName);
-
-
+			pstmt=conn.prepareStatement("delete from ServerCand where cand_Index=? and cand_Elecnum=?");
+			pstmt.setInt(1, candNum+1);
+			pstmt.setInt(2,elecNum);
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -249,9 +234,25 @@ public class ServerDAO {
 		return re;
 	}
 
+	public String getElecNameByNum(int elecNum) {
+		String name = "";
+		try{
+			pstmt=conn.prepareStatement("select elec_name from ServerElec where elec_index=?");
+			pstmt.setInt(1, elecNum);
+			rs = pstmt.executeQuery();
+			rs.next();
+			name = rs.getString("elec_name");
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}finally{
+			dbClose();
+		}
+		return name;
+	}
 
 
-	public void listCand(String[] comboName) {
+	//필요 없어보임
+	/*public void listCand(String[] comboName) {
 		sql = "select elec_Name from ServerElec order by elec_Index asc";
 		try {
 
@@ -268,6 +269,6 @@ public class ServerDAO {
 			dbClose();
 		}
 
-	}
+	}*/
 
 }
