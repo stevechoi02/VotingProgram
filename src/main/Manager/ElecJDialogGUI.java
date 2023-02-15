@@ -1,6 +1,7 @@
 
 package main.Manager;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 
 	JPanel pLabel;
 	JPanel pField;
+	JPanel pImg = new JPanel(new BorderLayout());
 	JPanel pButton = new JPanel();
 
 	JLabel lblName = new JLabel("이  름");
@@ -24,13 +26,14 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 	JLabel lblEndDate = new JLabel("마 감");
 	JLabel lblImg = new JLabel("사  진");
 
-	public JTextField txtName = new JTextField(10);
-	public JTextField txtAge = new JTextField(10);
-	public JTextField txtEndDate = new JTextField(10);
-	public JTextField txtImg = new JTextField(10);
+	public JTextField txtName = new JTextField();
+	public JTextField txtAge = new JTextField();
+	public JTextField txtEndDate = new JTextField();
+	public JTextField txtImg = new JTextField();
 
 	JButton btnOK;
 	JButton btnCancel;
+	JButton btnImg;
 	
 	ServerDAO dao = new ServerDAO();
 
@@ -52,9 +55,13 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 
 		
 		btnCancel = new JButton("취소");
+		btnImg = new JButton("경로선택");
 		
 		pLabel = new JPanel(new GridLayout(3,1,5,10));
 		pField = new JPanel(new GridLayout(3,1,5,10));
+		
+		pImg.add(txtImg, "Center");
+		pImg.add(btnImg, "East");
 
 		pLabel.add(lblName);
 		pLabel.add(lblEndDate);
@@ -62,7 +69,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 
 		pField.add(txtName);
 		pField.add(txtEndDate);
-		pField.add(txtImg);
+		pField.add(pImg);
 
 		pButton.add(btnOK);
 		pButton.add(btnCancel);
@@ -78,10 +85,11 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 		
 		btnOK.addActionListener(this);
 		btnCancel.addActionListener(this);
+		btnImg.addActionListener(this);
 
 	}//생성자
 
-	public ElecJDialogGUI(JTable table, String name) {
+/*	public ElecJDialogGUI(JTable table, String name) {
 
 		setTitle("후보자 추가/수정");
 		
@@ -115,7 +123,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 		btnCancel.addActionListener(this);
 
 	}//생성자
-
+*/
 	public static void messageBox(Object obj, String message) {
 		JOptionPane.showMessageDialog((Component)obj, message);
 	}
@@ -154,6 +162,9 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 					table.setRowSelectionInterval(0, 0);
 				}
 			}
+		}else if(btnLabel.equals("경로선택")) {
+			ImgChooser imgChooser = new ImgChooser();
+			imgChooser.printFilePath(txtImg);
 		}
 		
 	}

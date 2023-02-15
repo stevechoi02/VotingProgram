@@ -271,6 +271,7 @@ model = new DefaultTableModel(header, 0);
 
 package main.ui.server;
 
+import main.Manager.CandJDialogGUI;
 import main.Manager.ElecJDialogGUI;
 import main.dao.ServerDAO;
 
@@ -316,6 +317,7 @@ public class ServerFrame {
                 }
             }
         });
+        
 
         /*final JPanel labels = new JPanel(new GridLayout(0,3,3,3));
         labels.setBorder(
@@ -326,6 +328,8 @@ public class ServerFrame {
         dynamicLabels.add(title, BorderLayout.NORTH);
         dynamicLabels.add( new JScrollPane(candList), BorderLayout.CENTER );
         gui.add(dynamicLabels, BorderLayout.WEST);
+        
+        
 
         class TabbedPane extends JPanel {
             public TabbedPane() {
@@ -391,7 +395,7 @@ public class ServerFrame {
                 });
                 
                 JPanel searchPanel = new JPanel(new GridLayout());
-                JTextField txtBar = new JTextField();
+                JTextField txtBar = new JTextField(10);
                 JButton btn = new JButton("검색");
                 searchPanel.add(txtBar);
                 searchPanel.add(btn);
@@ -404,7 +408,7 @@ public class ServerFrame {
                 return panel;
             }
 
-            protected JComponent makeCandPanel() {
+            public JComponent makeCandPanel() {
                 JPanel panel = new JPanel(
                         new FlowLayout(FlowLayout.RIGHT, 3, 3));
 
@@ -415,13 +419,43 @@ public class ServerFrame {
                 add.addActionListener( new ActionListener(){
 
                     private int labelCount = 0;
-
+                    
                     public void actionPerformed(ActionEvent ae) {
+                    	
+                        
+                        new CandJDialogGUI(elecModel, elecTable, "선거 후보 등록");
 
                         candModel.addElement(new ImageIcon("mt01.jpeg"));
                         frame.validate();
                     }
                 } );
+                
+                edit.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						new CandJDialogGUI(elecModel, elecTable, "선거 후보 수정");
+						
+					}
+				});
+                
+                delete.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int row =elecTable.getSelectedRow();
+						String elecName = elecTable.getValueAt(row, 1).toString();
+						if(CandJDialogGUI.massageConfirmBox(this, "정말 후보를 삭제하시겠습니까?")==0) {
+                            if(dao.candDelete(elecName /*, 후보list인자*/)>0) {
+                                //dao.serverElecSelectAll(elecModel);
+                                if(elecModel.getRowCount()>0) {
+                                    elecTable.setRowSelectionInterval(0, 0);
+                                }
+                            }
+                        }
+						
+					}
+				});
                 panel.add(add);
                 panel.add(edit);
                 panel.add(delete);
