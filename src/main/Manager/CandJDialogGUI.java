@@ -100,6 +100,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
 
         btnOK.addActionListener(this);
         btnCancel.addActionListener(this);
+        btnImg.addActionListener(this);
 
     }//생성자
 
@@ -133,9 +134,10 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
                     dao.serverCandSelectAll(model, elecNum);
                 }
                 break;
-            case "경로 선택":
+            case "경로선택":
                 ImgChooser imgChooser = new ImgChooser();
                 imgChooser.printFilePath(txtImg);
+                break;
         }
 
     }

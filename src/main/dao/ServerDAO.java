@@ -1,6 +1,8 @@
 package main.dao;
 
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,11 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import main.Manager.CandJDialogGUI;
 import main.Manager.ElecJDialogGUI;
+import main.ui.server.ServerFrame;
 
 public class ServerDAO {
 
@@ -30,31 +34,31 @@ public class ServerDAO {
 
 	public ServerDAO() {
 		try {
-	         Class.forName(driver);
-	         conn=DriverManager.getConnection(url, user, password);
-	         
+			Class.forName(driver);
+			conn=DriverManager.getConnection(url, user, password);
 
-	      }catch(ClassNotFoundException | SQLException e) {e.printStackTrace();}
+
+		}catch(ClassNotFoundException | SQLException e) {e.printStackTrace();}
 
 	}
-	
-	public void dbClose() {
-	      try {
-	         if(rs != null) rs.close();
-	         if(stmt != null) stmt.close();
-	         if(pstmt != null) pstmt.close();
-	      }catch(Exception e) {
-	         e.printStackTrace();
-	      }
-	   }//dbClose()
 
-	   public void conClose() {
-	      try {
-	         if(conn != null) conn.close();
-	      }catch(Exception e) {
-	         e.printStackTrace();
-	      }
-	   }
+	public void dbClose() {
+		try {
+			if(rs != null) rs.close();
+			if(stmt != null) stmt.close();
+			if(pstmt != null) pstmt.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}//dbClose()
+
+	public void conClose() {
+		try {
+			if(conn != null) conn.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	//선거 레코드 조회
 	public void serverElecSelectAll(DefaultTableModel dt) {
@@ -86,44 +90,65 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end,elec_img)"
-					+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'),?)");
-			pstmt.setString(1, user.txtName.getText().trim());
-			pstmt.setString(2, user.txtEndDate.getText().trim());
+			if(user.txtImg.getText().length()==0) {
+				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end)"
+						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'))");
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtEndDate.getText().trim());
+				re = pstmt.executeUpdate();
+			}else {
+				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_img)"
+						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'), ?)");
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtEndDate.getText().trim());
+				FileInputStream fin=new FileInputStream(user.txtImg.getText());
+				pstmt.setBinaryStream(3, fin, fin.available());
+				re = pstmt.executeUpdate();
+				fin.close();
+			}
 
-			FileInputStream fin=new FileInputStream(user.txtImg.getText());
-			pstmt.setBinaryStream(3, fin, fin.available());
-			
-			re = pstmt.executeUpdate();
-			fin.close();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
 			dbClose();
 		}
-		
+
 		return re;
 	}
 
 	public int elecUpdate(ElecJDialogGUI user) {
 		int re = -1;
-		
+
 		try {
-			pstmt=conn.prepareStatement("update ServerElec set elec_name=?, elec_end=? where elec_Index=? ");
-			pstmt.setString(1, user.txtName.getText().trim());
-			pstmt.setString(2, user.txtEndDate.getText().trim());
-			pstmt.setInt(3, user.index);
-			re = pstmt.executeUpdate();
+			if(user.txtImg.getText().length()==0) {
+				pstmt=conn.prepareStatement("update ServerElec set elec_name=?, elec_end=? "
+						+ " where elec_Index=? ");
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtEndDate.getText().trim());
+				pstmt.setInt(3, user.index);
+				re = pstmt.executeUpdate();
+			}else {
+				pstmt=conn.prepareStatement("update ServerElec set elec_name=?, elec_end=?, elec_img=? "
+						+ " where elec_Index=? ");
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtEndDate.getText().trim());
+				FileInputStream fin=new FileInputStream(user.txtImg.getText());
+				pstmt.setBinaryStream(3, fin, fin.available());
+				pstmt.setInt(3, user.index);
+
+				re = pstmt.executeUpdate();
+				fin.close();
+			}
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
 			dbClose();
 		}
-		
+
 		return re;
 	}
 
 	public int elecDelete(int index) {
 		int re=-1;
-		
+
 		try {
 			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=?");
 
@@ -133,7 +158,7 @@ public class ServerDAO {
 		finally {
 			dbClose();
 		}
-		
+
 		return re;
 	}
 
@@ -154,14 +179,14 @@ public class ServerDAO {
 	public void listElec(String[] comboName) {
 		sql = "select elec_Name from ServerElec order by elec_Index asc";
 		try {
-			
+
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sql);
 			System.out.println(rs.getRow());
 			for(int i=0;i<rs.getRow();i++) {
 				data[i] = rs.getString(1);
 			}
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -199,15 +224,31 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName, cand_ElecNum)"
-					+ "values(?,?,?,?,?)");
-			pstmt.setString(1, user.txtID.getText().trim());
-			pstmt.setString(2, user.txtName.getText().trim());
-			pstmt.setString(3, user.txtSent.getText().trim());
-			pstmt.setString(4,user.elecName);
-			pstmt.setInt(5, user.elecNum);
 
-			re = pstmt.executeUpdate();
+			if(user.txtImg.getText().length()==0) {
+				pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName, cand_ElecNum)"
+						+ "values(?,?,?,?,?)");
+				pstmt.setString(1, user.txtID.getText().trim());
+				pstmt.setString(2, user.txtName.getText().trim());
+				pstmt.setString(3, user.txtSent.getText().trim());
+				pstmt.setString(4,user.elecName);
+				pstmt.setInt(5, user.elecNum);
+
+				re = pstmt.executeUpdate();
+			}else {
+				pstmt=conn.prepareStatement("insert into ServerCand (cand_Index, cand_Name, cand_Sent, cand_ElecName, cand_ElecNum, cand_Img)"
+						+ "values(?,?,?,?,?,?)");
+				pstmt.setString(1, user.txtID.getText().trim());
+				pstmt.setString(2, user.txtName.getText().trim());
+				pstmt.setString(3, user.txtSent.getText().trim());
+				pstmt.setString(4,user.elecName);
+				pstmt.setInt(5, user.elecNum);
+				FileInputStream fin=new FileInputStream(user.txtImg.getText());
+				pstmt.setBinaryStream(6, fin, fin.available());
+
+				re = pstmt.executeUpdate();
+				fin.close();
+			}
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
 			dbClose();
@@ -220,15 +261,29 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("update ServerCand set cand_Name=?,cand_Sent=?"
-					+ " where cand_elecnum=? and cand_Index=? ");
-			
-			pstmt.setString(1, user.txtName.getText().trim());
-			pstmt.setString(2, user.txtSent.getText());
-			pstmt.setInt(3, user.elecNum);
-			pstmt.setString(4, user.txtID.getText().trim());
+			if(user.txtImg.getText().length()==0) {
+				pstmt=conn.prepareStatement("update ServerCand set cand_Name=?,cand_Sent=?"
+						+ " where cand_elecnum=? and cand_Index=? ");
 
-			re = pstmt.executeUpdate();
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtSent.getText());
+				pstmt.setInt(3, user.elecNum);
+				pstmt.setString(4, user.txtID.getText().trim());
+
+				re = pstmt.executeUpdate();
+			}else {
+				pstmt=conn.prepareStatement("update ServerCand set cand_Name=?,cand_Sent=?,cand_img=?"
+						+ " where cand_elecnum=? and cand_Index=? ");
+
+				pstmt.setString(1, user.txtName.getText().trim());
+				pstmt.setString(2, user.txtSent.getText());
+				FileInputStream fin=new FileInputStream(user.txtImg.getText());
+				pstmt.setBinaryStream(3, fin, fin.available());
+				pstmt.setInt(4, user.elecNum);
+				pstmt.setString(5, user.txtID.getText().trim());
+				re = pstmt.executeUpdate();
+				fin.close();
+			}
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
 			dbClose();
@@ -269,6 +324,58 @@ public class ServerDAO {
 		return name;
 	}
 
+	public BufferedImage getElecImage(int index){
+		BufferedImage bi = null;
+
+		sql = "select elec_Img from ServerElec where elec_Index=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, index);
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				InputStream in = rs.getBinaryStream(1);
+
+				bi = ImageIO.read(in);
+			}else {
+				System.out.println("로드에 실패");
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return bi;
+
+	}
+
+	public BufferedImage getCandImage(int candNum, int elecNum){
+		BufferedImage bi = null;
+
+		sql = "select cand_Img from ServerCand where cand_Index=? and cand_Elecnum=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, candNum+1);
+			pstmt.setInt(2,elecNum);
+			rs = pstmt.executeQuery();
+
+			if(rs.next()) {
+				InputStream in = rs.getBinaryStream(1);
+
+				bi = ImageIO.read(in);
+			}else {
+				System.out.println("로드에 실패");
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return bi;
+
+	}
 
 	//필요 없어보임
 	/*public void listCand(String[] comboName) {
