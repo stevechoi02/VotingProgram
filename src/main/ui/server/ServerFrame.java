@@ -3,6 +3,7 @@ package main.ui.server;
 
 import main.Manager.CandJDialogGUI;
 import main.Manager.ElecJDialogGUI;
+import main.Manager.ImageLoadTest;
 import main.dao.ServerDAO;
 
 import javax.swing.*;
@@ -126,6 +127,18 @@ public class ServerFrame {
                 JPanel searchPanel = new JPanel(new GridLayout());
                 JTextField txtBar = new JTextField(10);
                 JButton btn = new JButton("검색");
+                /*test*/
+                btn.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int row = elecTable.getSelectedRow();
+                        int index = (int) elecTable.getValueAt(row, 0);
+                        new ImageLoadTest(index);
+						
+					}
+				});
+                /*test*/
                 searchPanel.add(txtBar);
                 searchPanel.add(btn);
 
