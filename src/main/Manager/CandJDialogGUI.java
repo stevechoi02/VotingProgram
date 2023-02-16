@@ -1,6 +1,7 @@
 
 package main.Manager;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
     JPanel pLabel;
     JPanel pField;
     JPanel pButton = new JPanel();
+    JPanel pImg = new JPanel(new BorderLayout());
 
     JLabel lblID = new JLabel("기 호");
     JLabel lblName = new JLabel("이  름");
@@ -57,17 +59,22 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
         	btnOK = new JButton("등록");
         }else {
         	btnOK = new JButton("수정");
-        	/*txtID.setText(table.getValueAt(row, 0).toString());
-        	txtName.setText(table.getValueAt(row, 1).toString());
-        	txtSent.setText(table.getValueAt(row, 2).toString());*/
+        	
+        	txtID.setText(list.getSelectedValue().substring(4,5));
+        	txtName.setText(list.getSelectedValue().substring(7));
+        	txtID.setEditable(false);
         }
 
         
         btnCancel = new JButton("취소");
         btnImg = new JButton("경로선택");
+        
 
         pLabel = new JPanel(new GridLayout(4,1,5,10));
         pField = new JPanel(new GridLayout(4,1,5,10));
+        
+        pImg.add(txtImg, "Center");
+        pImg.add(btnImg, "East");
 
         pLabel.add(lblID);
         pLabel.add(lblName);
@@ -76,7 +83,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
 
         pField.add(txtID);
         pField.add(txtName);
-        pField.add(txtImg);
+        pField.add(pImg);
         pField.add(txtSent);
 
         pButton.add(btnOK);
