@@ -43,6 +43,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 	public ElecJDialogGUI(DefaultTableModel model, JTable table, String name) {
 		this.table = table;
 		this.model = model;
+
 		setTitle("선거 추가/수정");
 		if(name.equals("서버 선거 추가")){btnOK = new JButton("확인");}
 		else{

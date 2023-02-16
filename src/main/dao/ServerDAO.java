@@ -73,8 +73,8 @@ public class ServerDAO {
 						rs.getDate("elec_End")
 				};
 				dt.addRow(data);
+				dt.fireTableDataChanged();
 			}
-			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -126,8 +126,8 @@ public class ServerDAO {
 		
 		try {
 			pstmt=conn.prepareStatement("delete from ServerElec where elec_Index=?");
-			pstmt.setInt(1, index);
 
+			pstmt.setInt(1, index);
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
 		finally {
@@ -135,6 +135,18 @@ public class ServerDAO {
 		}
 		
 		return re;
+	}
+
+	public void candDeleteByElecNum(int index){
+		try{
+			pstmt = conn.prepareStatement("delete from ServerCand where cand_ElecNum=?");
+			pstmt.executeQuery();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally{
+			dbClose();
+		}
 	}
 
 
@@ -164,10 +176,16 @@ public class ServerDAO {
 			pstmt.setInt(1, elecNum);
 			rs = pstmt.executeQuery();
 			dl.clear();
-			while(rs.next()){
-				String name = rs.getString("cand_Name");
-				int num = rs.getInt("cand_Index");
-				dl.addElement("후보 #"+num+": "+name);
+
+			if(!rs.next()){
+				dl.addElement("후보를 추가해주세요!");
+			}else {
+				do{
+					String name = rs.getString("cand_Name");
+					int num = rs.getInt("cand_Index");
+					dl.addElement("후보 #" + num + ": " + name);
+				}while (rs.next());
+
 			}
 
 		}catch(Exception e) {

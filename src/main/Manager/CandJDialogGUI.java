@@ -33,6 +33,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
 
     JButton btnOK;
     JButton btnCancel;
+    JButton btnImg;
 
     ServerDAO dao = new ServerDAO();
 
@@ -56,16 +57,14 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
         	btnOK = new JButton("등록");
         }else {
         	btnOK = new JButton("수정");
-        	/*
-        	 * 여기 table을 후보자list에 대응되도록 변경해야함
-        	txtID.setText(table.getValueAt(row, 0).toString());
+        	/*txtID.setText(table.getValueAt(row, 0).toString());
         	txtName.setText(table.getValueAt(row, 1).toString());
-        	txtSent.setText(table.getValueAt(row, 2).toString());
-        	*/
+        	txtSent.setText(table.getValueAt(row, 2).toString());*/
         }
 
         
         btnCancel = new JButton("취소");
+        btnImg = new JButton("경로선택");
 
         pLabel = new JPanel(new GridLayout(4,1,5,10));
         pField = new JPanel(new GridLayout(4,1,5,10));
@@ -98,7 +97,7 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
     }//생성자
 
     public static void messageBox(Object obj, String message) {
-        JOptionPane.showMessageDialog((Component)obj, message);
+        JOptionPane.showMessageDialog((Component) obj, message);
     }
     public static int massageConfirmBox(Object obj, String message) {
         return JOptionPane.showConfirmDialog(null,message,"데이터 삭제",JOptionPane.YES_NO_OPTION);
@@ -127,6 +126,9 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
                     dao.serverCandSelectAll(model, elecNum);
                 }
                 break;
+            case "경로 선택":
+                ImgChooser imgChooser = new ImgChooser();
+                imgChooser.printFilePath(txtImg);
         }
 
     }
