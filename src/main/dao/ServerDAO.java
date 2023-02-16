@@ -23,8 +23,8 @@ public class ServerDAO {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	//String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
-	String user = "vote";
-	String password = "56789";
+	String user = "elec";
+	String password = "456789";
 	String sql = null;
 	private String[] data;
 
@@ -220,12 +220,13 @@ public class ServerDAO {
 		int re = -1;
 
 		try {
-			pstmt=conn.prepareStatement("update ServerCand set cand_Index=?, cand_Name=?,cand_Sent=?"
-					+ " where cand_elecnum=? ");
-			pstmt.setString(1, user.txtID.getText().trim());
-			pstmt.setString(2, user.txtName.getText().trim());
-			pstmt.setString(3, user.txtSent.getText());
-			pstmt.setInt(4, user.elecNum);
+			pstmt=conn.prepareStatement("update ServerCand set cand_Name=?,cand_Sent=?"
+					+ " where cand_elecnum=? and cand_Index=? ");
+			
+			pstmt.setString(1, user.txtName.getText().trim());
+			pstmt.setString(2, user.txtSent.getText());
+			pstmt.setInt(3, user.elecNum);
+			pstmt.setString(4, user.txtID.getText().trim());
 
 			re = pstmt.executeUpdate();
 		}catch(Exception e) {e.printStackTrace();}
