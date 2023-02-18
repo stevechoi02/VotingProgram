@@ -52,6 +52,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 			index = (int) table.getValueAt(row, 0);
 			txtName.setText(table.getValueAt(row, 1).toString());
 			txtEndDate.setText(table.getValueAt(row, 2).toString());
+			txtImg.setText("");
 		}
 
 		
@@ -117,13 +118,21 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 
 				break;
 			case "수정":
-				if (dao.elecUpdate(this) > 0) {
-					messageBox(this, "수정되었습니다.");
-					dispose();
+				if(txtName.getText().trim().isEmpty()){
+					messageBox(this,"이름을 입력해주세요!");
+				}else if(txtEndDate.getText().trim().isEmpty()){
+					messageBox(this, "'YYYY-MM-DD' 형식으로 입력해줏세요!");
+				}else if(txtImg.getText().trim().isEmpty()) {
+					messageBox(this, "사진을 선택해주세요!");
+				}else {
+					if (dao.elecUpdate(this) > 0) {
+						messageBox(this, "수정되었습니다.");
+						dispose();
 
-					dao.serverElecSelectAll(model);
-					if (table.getRowCount() > 0) {
-						table.setRowSelectionInterval(0, 0);
+						dao.serverElecSelectAll(model);
+						if (table.getRowCount() > 0) {
+							table.setRowSelectionInterval(0, 0);
+						}
 					}
 				}
 				break;

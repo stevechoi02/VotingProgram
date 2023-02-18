@@ -3,19 +3,17 @@ package main.dao;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import main.Manager.CandJDialogGUI;
+import main.Manager.CandVO;
 import main.Manager.ElecJDialogGUI;
 import main.ui.server.ServerFrame;
 
@@ -31,10 +29,11 @@ public class ServerDAO {
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	//String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
-	String user = "elec";
-	String password = "456789";
+	String user = "vote";
+	String password = "56789";
 	String sql = null;
-	private String[] data;
+	private Object[] data;
+	private static boolean openConn;
 
 	public ServerDAO() {
 		try {
@@ -89,6 +88,7 @@ public class ServerDAO {
 			e.printStackTrace();
 		}finally {
 			dbClose();
+			openConn=false;
 		}
 	}
 
@@ -97,18 +97,20 @@ public class ServerDAO {
 
 		try {
 			if(user.txtImg.getText().length()==0) {
-				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end)"
-						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'))");
+				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_fin)"
+						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'),?)");
 				pstmt.setString(1, user.txtName.getText().trim());
 				pstmt.setString(2, user.txtEndDate.getText().trim());
+				pstmt.setInt(3,0);
 				re = pstmt.executeUpdate();
 			}else {
-				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_img)"
-						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'), ?)");
+				pstmt=conn.prepareStatement("insert into ServerElec (elec_Index, elec_Name, elec_start, elec_end, elec_img,elec_fin)"
+						+ "values(eIndex_seq.nextval,?, sysdate,TO_DATE(?,'YYYY-MM-DD'), ?,?)");
 				pstmt.setString(1, user.txtName.getText().trim());
 				pstmt.setString(2, user.txtEndDate.getText().trim());
 				FileInputStream fin=new FileInputStream(user.txtImg.getText());
 				pstmt.setBinaryStream(3, fin, fin.available());
+				pstmt.setInt(4,0);
 				re = pstmt.executeUpdate();
 				fin.close();
 			}
@@ -171,7 +173,9 @@ public class ServerDAO {
 	public void candDeleteByElecNum(int index){
 		try{
 			pstmt = conn.prepareStatement("delete from ServerCand where cand_ElecNum=?");
+			pstmt.setInt(1, index);
 			pstmt.executeQuery();
+
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -205,18 +209,17 @@ public class ServerDAO {
 		try {
 			pstmt=conn.prepareStatement("select cand_name, cand_Index from ServerCand where cand_elecnum=? order by cand_Index asc");
 			pstmt.setInt(1, elecNum);
-			rs = pstmt.executeQuery();
+			ResultSet rs1 = pstmt.executeQuery();
 			dl.clear();
 
-			if(!rs.next()){
+			if(!rs1.next()){
 				dl.addElement("후보를 추가해주세요!");
 			}else {
 				do{
-					String name = rs.getString("cand_Name");
-					int num = rs.getInt("cand_Index");
+					String name = rs1.getString("cand_Name");
+					int num = rs1.getInt("cand_Index");
 					dl.addElement("후보 #" + num + ": " + name);
-				}while (rs.next());
-
+				}while (rs1.next());
 			}
 
 		}catch(Exception e) {
@@ -368,7 +371,7 @@ public class ServerDAO {
 
 		}catch(Exception e) {
 			e.printStackTrace();
-		}finally {
+		}finally{
 			dbClose();
 		}
 		return bi;
@@ -415,8 +418,7 @@ public class ServerDAO {
 
 			if(rs1.next()) {
 				InputStream in = rs1.getBinaryStream(1);
-
-				bi = ImageIO.read(in);
+        bi = ImageIO.read(in);
 			}else {
 				System.out.println("로드에 실패");
 			}
@@ -441,8 +443,9 @@ public class ServerDAO {
 
 			if(rs2.next()) {
 				InputStream in = rs2.getBinaryStream(1);
+		
+					bi = ImageIO.read(in);
 
-				bi = ImageIO.read(in);
 			}else {
 				System.out.println("로드에 실패");
 			}
@@ -477,25 +480,65 @@ public class ServerDAO {
 		
 	}
 
+	public ArrayList<CandVO> getCandListbyElecNum(int num){
+		ArrayList<CandVO> cList = new ArrayList<>();
+		sql = "select * from ServerCand where cand_ElecNum = ? order by cand_Index asc";
+		BufferedImage bi = null;
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,num);
+			ResultSet rs1 = pstmt.executeQuery();
+			while(rs1.next()) {
+				CandVO c = new CandVO();
+				c.setCand_No(rs1.getInt("cand_Index"));
+				c.setCand_Name(rs1.getString("cand_Name"));
+				c.setCand_Sent(rs1.getString("cand_Sent"));
+				c.setElec_Name(rs1.getString("cand_elecname"));
+				c.setElec_Num(rs1.getInt("cand_elecnum"));
+				c.setCand_Selected(rs1.getInt("cand_Selected"));
+				InputStream in = rs1.getBinaryStream("cand_Img");
+				bi = ImageIO.read(in);
+				c.setCand_Img(bi);
+				cList.add(c);
+			}
+		}catch(Exception e){e.printStackTrace();}
+		finally {
+			dbClose();
+		}
+		return cList;
+	}
 
-	//필요 없어보임
-	/*public void listCand(String[] comboName) {
-		sql = "select elec_Name from ServerElec order by elec_Index asc";
-		try {
+	public void StopElection(int currElec) {
+		sql = "update ServerElec set elec_fin = 1 where elec_index=?";
+		try{
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, currElec);
+			pstmt.executeUpdate();
 
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-			System.out.println(rs.getRow());
-			for(int i=0;i<rs.getRow();i++) {
-				data[i] = rs.getString(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			dbClose();
+		}
+	}
+
+
+	public int getElecFin(int currElecNum){
+		int res = 0;
+		sql = "select elec_fin from serverelec where elec_index=?";
+		try{
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, currElecNum);
+			ResultSet rs1 = pstmt.executeQuery();
+			if(rs1.next()){
+				res = rs1.getInt("elec_fin");
 			}
 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
+		}catch(Exception e){e.printStackTrace();}
+		finally {
 			dbClose();
 		}
 
-	}*/
-
+		return res;
+	}
 }
