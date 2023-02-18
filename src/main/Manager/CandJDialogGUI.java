@@ -121,11 +121,14 @@ public class CandJDialogGUI extends JDialog implements ActionListener{
                     messageBox(this,"기호 숫자를 입력해주세요!");
                 }else if(txtName.getText().trim().isEmpty()){
                     messageBox(this,"이름을 입력해주세요!");
-                }
-                if(dao.candInsert(this) > 0) {
-                    messageBox(this, "후보가 등록되었습니다.");
-                    dispose();
-                    dao.serverCandSelectAll(model, elecNum);
+                }else if(txtImg.getText().trim().isEmpty()){
+                    messageBox(this,"사진을 골라주세요!");
+                } else {
+                    if (dao.candInsert(this) > 0) {
+                        messageBox(this, "후보가 등록되었습니다.");
+                        dispose();
+                        dao.serverCandSelectAll(model, elecNum);
+                    }
                 }
                 break;
             case "취소":

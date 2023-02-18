@@ -120,7 +120,7 @@ public class ElecJDialogGUI extends JDialog implements ActionListener{
 			case "수정":
 				if(txtName.getText().trim().isEmpty()){
 					messageBox(this,"이름을 입력해주세요!");
-				}else if(txtEndDate.getText().trim().length() != 8){
+				}else if(txtEndDate.getText().trim().isEmpty()){
 					messageBox(this, "'YYYY-MM-DD' 형식으로 입력해줏세요!");
 				}else if(txtImg.getText().trim().isEmpty()) {
 					messageBox(this, "사진을 선택해주세요!");

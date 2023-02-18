@@ -14,10 +14,10 @@ public class ClientDAO {//JDBC
    PreparedStatement pstmt;
    ResultSet rs;
    String driver = "oracle.jdbc.driver.OracleDriver";
-   //String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
-   String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
-   String user = "elec";
-   String password = "456789";
+   String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
+   //String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
+   String user = "vote";
+   String password = "56789";
    String sql = null;
 
    public ClientDAO() {
@@ -96,8 +96,4 @@ public class ClientDAO {//JDBC
       return re;
 
    }//existUserData();
-
-
-
-
 }
