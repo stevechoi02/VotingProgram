@@ -23,6 +23,9 @@ public class ServerDAO {
 	Statement stmt;
 	PreparedStatement pstmt;
 	ResultSet rs;
+	ResultSet rs1;
+	ResultSet rs2;
+
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@127.0.0.1:1521:xe";
 	//String url = "jdbc:oracle:thin:@192.168.11.39:1521:xe";
@@ -45,6 +48,8 @@ public class ServerDAO {
 	public void dbClose() {
 		try {
 			if(rs != null) rs.close();
+			if(rs1 != null) rs1.close();
+			if(rs2 != null) rs2.close();
 			if(stmt != null) stmt.close();
 			if(pstmt != null) pstmt.close();
 		}catch(Exception e) {
@@ -328,6 +333,25 @@ public class ServerDAO {
 		return name;
 	}
 
+	public String getCandNameByNum(String election, int candNum) {
+		// TODO Auto-generated method stub
+		String name = "";
+		try{
+			pstmt=conn.prepareStatement("select cand_name from ServerCand where cand_ElecName=? and cand_index=?");
+			pstmt.setString(1, election);
+			pstmt.setInt(2, candNum);
+			rs1 = pstmt.executeQuery();
+			if(rs1.next())
+				name = rs1.getString("cand_name");
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}finally{
+			dbClose();
+		}
+		return name;
+	}
+
+
 	public BufferedImage getElecImage(int index){
 		BufferedImage bi = null;
 
@@ -362,11 +386,64 @@ public class ServerDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, candNum+1);
 			pstmt.setInt(2,elecNum);
-			rs = pstmt.executeQuery();
+			rs2 = pstmt.executeQuery();
 
-			if(rs.next()) {
-				InputStream in = rs.getBinaryStream(1);
-				if(in!=null)
+			if(rs2.next()) {
+				InputStream in = rs2.getBinaryStream(1);
+
+				bi = ImageIO.read(in);
+			}else {
+				System.out.println("로드에 실패");
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return bi;
+
+	}
+
+	public BufferedImage getCandImage(String candidate, String election) {
+		// TODO Auto-generated method stub
+		BufferedImage bi = null;
+
+		sql = "select cand_Img from ServerCand where cand_name=? and cand_Elecname=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, candidate);
+			pstmt.setString(2,election);
+			rs1 = pstmt.executeQuery();
+
+			if(rs1.next()) {
+				InputStream in = rs1.getBinaryStream(1);
+        bi = ImageIO.read(in);
+			}else {
+				System.out.println("로드에 실패");
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			dbClose();
+		}
+		return bi;
+	}
+
+	public BufferedImage getCandImage(int i, String election) {
+		BufferedImage bi = null;
+
+		sql = "select cand_Img from ServerCand where cand_Index=? and cand_Elecname=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, i);
+			pstmt.setString(2,election);
+			rs2 = pstmt.executeQuery();
+
+			if(rs2.next()) {
+				InputStream in = rs2.getBinaryStream(1);
+		
 					bi = ImageIO.read(in);
 
 			}else {
@@ -379,7 +456,28 @@ public class ServerDAO {
 			dbClose();
 		}
 		return bi;
+	}
 
+	public int addCandSelected(String election, String selectedCand) {
+		int re = -1;
+
+		try {
+			
+				pstmt=conn.prepareStatement("update ServerCand set Cand_selected = Cand_selected+1 "
+						+ " where cand_elecname=? and cand_name=? ");
+
+				pstmt.setString(1, election);
+				pstmt.setString(2, selectedCand);
+
+				re = pstmt.executeUpdate();
+			
+		}catch(Exception e) {e.printStackTrace();}
+		finally {
+			dbClose();
+		}
+
+		return re;
+		
 	}
 
 	public ArrayList<CandVO> getCandListbyElecNum(int num){

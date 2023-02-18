@@ -15,13 +15,13 @@ public class ClientCards extends JPanel{
         ClientElec cElec = new ClientElec();
         ClientLogin cLogin = new ClientLogin();
         ClientMain cMain = new ClientMain();
-        ClientVote cVote = new ClientVote("Election");
+        //ClientVote cVote = new ClientVote("Election");
 
 
         controller.addView(cMain, "Main");
         controller.addView(cLogin, "Login");
         controller.addView(cElec, "Election");
-        controller.addView(cVote, "Vote");
+       // controller.addView(cVote, "Vote");
         controller.getView("Login");
         validate();
 
