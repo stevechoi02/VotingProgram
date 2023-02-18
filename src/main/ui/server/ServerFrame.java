@@ -2,6 +2,7 @@ package main.ui.server;
 
 
 import main.Manager.CandJDialogGUI;
+import main.Manager.CandVO;
 import main.Manager.ElecJDialogGUI;
 import main.Manager.ImageLoadTest;
 import main.dao.ServerDAO;
@@ -15,10 +16,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Date;
+import java.util.ArrayList;
 
 public class ServerFrame {
     private final JFrame frame;
@@ -29,23 +28,73 @@ public class ServerFrame {
     private final DefaultListModel<String> candModel;
     private final JTable elecTable;
     private final JList<String> candList;
-
+    private final JPanel candInfo;
+    private final JLabel candImg;
+    private final JPanel candDesc;
+    private ArrayList<CandVO> cands;
     //현재 선거 변수
-    private int currElec;
+    private int currElecNum;
+    private String currElecName;
+
+    //현재 후보 변수
+    private int currCandNum;
+    private String currCandName;
+    private int currCandSelected;
+
+    private boolean flag;
+
+    private final Color[] colors = {Color.RED, Color.YELLOW, Color.BLUE, Color.ORANGE, Color.MAGENTA, Color.CYAN};
 
     public ServerFrame(){
         frame = new JFrame("투표 관리 프로그램 서버 GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         final JPanel gui = new JPanel(new BorderLayout(5, 5));
-        gui.setBorder( new TitledBorder("서버 관리 목록") );
+        gui.setBorder( new TitledBorder("서버 관리 목록"));
 
         candModel = new DefaultListModel<String>();
         candModel.addElement("선거를 선택하세요!");
         candList = new JList<String>(candModel);
 
         candList.setFixedCellHeight(50);
-        //candList.setFixedCellWidth(100);
+
+        candList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    currCandNum = candList.getSelectedIndex()+1;
+                    if (currCandNum != -1) {
+                        cands = dao.getCandListbyElecNum(currElecNum);
+                        for(CandVO cand : cands){
+                            System.out.println("현재 후보 #: "+currCandNum);
+                            System.out.println("받은 후보 #: "+cand.getCand_No());
+                            if(currCandNum==cand.getCand_No()) {
+                                candDesc.removeAll();
+                                currCandName = cand.getCand_Name();
+                                currCandNum = cand.getCand_No();
+                                currCandSelected = cand.getCand_Selected();
+                                candDesc.add(new JLabel("후보 기호: " + cand.getCand_No()));
+                                candDesc.add(Box.createVerticalStrut(20));
+                                candDesc.add(new JLabel("후보 이름: " + cand.getCand_Name()));
+                                candDesc.add(Box.createVerticalStrut(20));
+                                candDesc.add(new JLabel("후보 각오: " + cand.getCand_Sent()));
+                                candDesc.add(Box.createVerticalStrut(20));
+                                candDesc.add(new JLabel("후보 투표 수: " + cand.getCand_Selected()));
+                                candDesc.add(Box.createVerticalStrut(20));
+                                candDesc.add(new JLabel("참가하는 선거: #" + cand.getElec_Num() + " - " + cand.getElec_Name()));
+                                BufferedImage candImage = cand.getCand_Img();
+                                candImg.setIcon(new ImageIcon(candImage));
+                                candImg.setText("");
+                                candDesc.repaint();
+                                candDesc.revalidate();
+                                candInfo.repaint();
+                                candInfo.revalidate();
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         JPanel dynamicLabels = new JPanel(new BorderLayout(4,4));
         dynamicLabels.setBorder(new TitledBorder("후보 리스트"));
@@ -164,7 +213,7 @@ public class ServerFrame {
                         if(elecTable.getSelectedRow()==-1) {
                             CandJDialogGUI.messageBox(null,"선거를 선택해주세요!");
                         } else {
-                            new CandJDialogGUI(candModel, candList, "등록", currElec);
+                            new CandJDialogGUI(candModel, candList, "등록", currElecNum);
                             /*dynamicLabels.repaint();
                             dynamicLabels.revalidate();*/
                         }
@@ -177,7 +226,7 @@ public class ServerFrame {
                         if (candList.isSelectionEmpty()) {
                             CandJDialogGUI.messageBox(null,"후보를 선택해주세요!");
                         } else {
-                            new CandJDialogGUI(candModel, candList, "수정", currElec);
+                            new CandJDialogGUI(candModel, candList, "수정", currElecNum);
                         }
 					}
 				});
@@ -191,11 +240,11 @@ public class ServerFrame {
                             int row = candList.getSelectedIndex();
                             String candName = candList.getSelectedValue();
                             if (CandJDialogGUI.massageConfirmBox(this, candName+"을(를)) 삭제하시겠습니까?") == 0) {
-                                if (dao.candDelete(row, currElec) > 0) {
+                                if (dao.candDelete(row, currElecNum) > 0) {
                                     candModel.remove(row);
                                 }
                             }
-                            dao.serverCandSelectAll(candModel, currElec);
+                            dao.serverCandSelectAll(candModel, currElecNum);
                         }
                     }
 				});
@@ -210,11 +259,64 @@ public class ServerFrame {
                 JPanel panel = new JPanel(
                         new FlowLayout(FlowLayout.RIGHT, 3, 3));
 
-                JButton result = new JButton("결과 발표");
-                JButton delete = new JButton("삭제(?)");
+                JButton stopElec = new JButton("선거 개표");
+                stopElec.setToolTipText("받은 투표수를 기반으로 개표 개시");
+                JButton result = new JButton("결과 확인");
 
+                stopElec.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(dao.getElecFin(currElecNum) == 0) {
+                            dao.StopElection(currElecNum);
+                            if (ElecJDialogGUI.massageConfirmBox(this, currElecName+"을(를) 끝내겠습니까?") == 0) {
+                                dao.StopElection(currElecNum);
+                            }
+                        }else{
+                            ElecJDialogGUI.messageBox(frame,"이미 끝난 선거입니다!");
+                        }
+                    }
+                });
+
+                result.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if(dao.getElecFin(currElecNum) == 1) {
+                            HistogramPanel result = new HistogramPanel();
+                            int max_ = 0;
+                            String leader = "";
+                            BufferedImage leader_img = null;
+                            JLabel leader_label = new JLabel();
+
+                            int cnt = 0;
+                            cands = dao.getCandListbyElecNum(currElecNum);
+                            for (CandVO cand : cands) {
+                                result.addHistogramColumn(cand.getCand_Name(), cand.getCand_Selected(), colors[cnt++]);
+                                if (cand.getCand_Selected() >= max_) {
+                                    max_ = cand.getCand_Selected();
+                                    leader = cand.getCand_Name();
+                                    leader_img = cand.getCand_Img();
+                                }
+                            }
+                            result.layoutHistogram();
+                            leader_label.setIcon(new ImageIcon(leader_img));
+                            leader_label.setText("축하합니다! " + leader + "님이 1등 하셨습니다.");
+                            JPanel info = new JPanel(new BorderLayout(10, 10));
+                            info.add(leader_label, BorderLayout.CENTER);
+                            info.add(leader_label, BorderLayout.NORTH);
+                            result.add(info, BorderLayout.NORTH);
+
+                            JFrame frame = new JFrame("Histogram Panel");
+                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            frame.add(result);
+                            frame.setLocationByPlatform(true);
+                            frame.pack();
+                            frame.setVisible(true);
+                        }
+                    }
+                });
+
+                panel.add(stopElec);
                 panel.add(result);
-                panel.add(delete);
 
                 return panel;
             }
@@ -282,9 +384,14 @@ public class ServerFrame {
                 try {
                     if(!e.getValueIsAdjusting()) {
                         int viewRow = elecTable.getSelectedRow();
-                        int modelRow = elecTable.convertRowIndexToModel(viewRow);
-                        currElec = (int) elecTable.getModel().getValueAt(modelRow, 0);
-                        dao.serverCandSelectAll(candModel, currElec);
+                        if(viewRow!=-1) {
+                            int modelRow = elecTable.convertRowIndexToModel(viewRow);
+                            currElecNum = (int) elecTable.getModel().getValueAt(modelRow, 0);
+                            currElecName = (String) elecTable.getModel().getValueAt(modelRow, 1);
+                            System.out.println(currElecNum);
+                            dao.serverCandSelectAll(candModel, currElecNum);
+                            candList.setSelectedIndex(0);
+                        }
                     }
                 }catch(Exception ignore){
                     ignore.printStackTrace();
@@ -301,25 +408,24 @@ public class ServerFrame {
         tableScroll.setPreferredSize(
                 new Dimension(tablePreferred.width, tablePreferred.height/3) );
 
-        JPanel imagePanel = new JPanel(new GridBagLayout());
-        imagePanel.setBorder(
-                new TitledBorder("후보 정보") );
+        candInfo = new JPanel(new BorderLayout(5,5));
+        candInfo.setBorder(
+                new TitledBorder("후보 정보"));
 
-        BufferedImage bi = new BufferedImage(
-                200,200,BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = bi.createGraphics();
-        GradientPaint gp = new GradientPaint(
-                20f,20f,Color.red, 180f,180f,Color.yellow);
-        g.setPaint(gp);
-        g.fillRect(0,0,200,200);
-        ImageIcon ii = new ImageIcon(bi);
-        JLabel imageLabel = new JLabel(ii);
-        imagePanel.add(imageLabel, null);
+        candImg = new JLabel("후보를 선택해주세요!");
+        candImg.setBorder(new TitledBorder("후보 사진"));
+        candInfo.add(candImg, BorderLayout.WEST);
+        candDesc = new JPanel();
+        candDesc.setBorder(new TitledBorder("후보 정보"));
+        candDesc.setLayout(new BoxLayout(candDesc, BoxLayout.Y_AXIS));
+        candDesc.add(new JLabel("후보를 선택해주세요!"));
+        candInfo.add(candDesc, BorderLayout.CENTER);
+
 
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.VERTICAL_SPLIT,
                 tableScroll,
-                new JScrollPane(imagePanel));
+                candInfo);
         gui.add( splitPane, BorderLayout.CENTER );
 
         frame.setContentPane(gui);
