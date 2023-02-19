@@ -8,7 +8,7 @@ public class ClientFrame extends JFrame{
 
     ClientFrame(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         cCards = new ClientCards();
         setLayout(new BorderLayout());
         add(cCards);

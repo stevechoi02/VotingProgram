@@ -2,17 +2,16 @@ package main.ui.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
 
+import main.Manager.CandVO;
 import main.Manager.ElecJDialogGUI;
 import main.dao.ServerDAO;
 
@@ -45,26 +45,36 @@ public class ClientVote extends JPanel implements ActionListener, ItemListener {
     public String selectedCand;
     
     public String ElecName;
+    public int elecNum;
   
     /**
      * Instantiates a new Client vote.
      */
     ServerDAO dao = new ServerDAO();
-    public ClientVote(String Election){
+	private ArrayList<CandVO> cands;
+	
+    public ClientVote(String Election, int elecNum){
         setLayout(new BorderLayout(10,10));
-        JPanel labels = new JPanel(new GridLayout(2,3,3,3));
+        JPanel labels = new JPanel(new GridLayout(0,3,3,3));
         labels.setBorder(new LineBorder(Color.BLACK));
         //updateCandList(Election);
         
-        for(int i=1;i<=6;i++) {
+       /* for(int i=1;i<=6;i++) {
         	candidates.add(dao.getCandNameByNum(Election, i));
         	
+        }*/
+        cands = dao.getCandListbyElecNum(elecNum);
+
+        for(CandVO cand: cands){
+            labels.add(makeCandPanel(cand.getCand_Name(), cand.getElec_Name()));
         }
         
 
-        for(String candidate:candidates){
+       /* 
+        * for(String candidate:candidates){
             labels.add(makeCandPanel(candidate, Election));
         }
+       */
         
 
         lblTitle = new JLabel(Election);
@@ -88,6 +98,7 @@ public class ClientVote extends JPanel implements ActionListener, ItemListener {
         //add(buttonPane,BorderLayout.EAST);
         
         ElecName=Election;
+        this.elecNum = elecNum;
     }
 
     protected JComponent makeCandPanel(String candidate, String Election){
@@ -118,7 +129,7 @@ public class ClientVote extends JPanel implements ActionListener, ItemListener {
     }
 
    
-
+/*
     public static void main(String[] args) {
         JFrame frame = new JFrame();
 
@@ -134,26 +145,25 @@ public class ClientVote extends JPanel implements ActionListener, ItemListener {
 
         frame.setVisible(true);
     }
-
+*/
 	
 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		for(int i=0;i<=5;i++) {
-			if(e.getSource() == radio.get(i)) {
-				selectedCand = radio.get(i).getText();
-				System.out.println(selectedCand);
-			}
-	
-		}
+		for(Enumeration<AbstractButton> btns= btnGroup.getElements(); btns.hasMoreElements();) {
+            AbstractButton btn = btns.nextElement();
+            if(btn.isSelected()){
+                selectedCand = btn.getText();
+            }
+        }
 		if(selectedCand==null) {
 			ElecJDialogGUI.messageBox(this, "후보를 골라주세요.");
 		}else if(e.getSource()==btnVote) {
 			System.out.println(ElecName);
 			dao.addCandSelected(ElecName, selectedCand);
 			ElecJDialogGUI.messageBox(this, selectedCand+ " 님에게 투표하셨습니다.");
-			System.exit(0);
+			ClientCards.controller.getView("Main");
 		}
 		
 	}
