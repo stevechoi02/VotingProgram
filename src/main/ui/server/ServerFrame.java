@@ -306,7 +306,7 @@ public class ServerFrame {
                             result.add(info, BorderLayout.NORTH);
 
                             JFrame frame = new JFrame("Histogram Panel");
-                            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             frame.add(result);
                             frame.setLocationByPlatform(true);
                             frame.pack();

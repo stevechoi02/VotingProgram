@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import main.dao.ServerDAO;
@@ -33,18 +35,18 @@ public class ClientElec extends JPanel implements ActionListener {
 	public JPanel panelMain;
 	private JPanel panel01, panel02;
 	private JPanel panel03;
-	JPanel panelElec, panelVote;
-	
+	JPanel panelVote;
+
 	String selectedCand;
-	
-	
-	
-	
+
+
+
+
 
 	DefaultTableModel dt = new DefaultTableModel(tableName, 0);
 	public JTable jt = new JTable(dt);
 	JScrollPane jsp = new JScrollPane(jt);
-	
+
 	BufferedImage bi;
 	ServerDAO dao = new ServerDAO();
 	ServerVO vo = new ServerVO();
@@ -59,7 +61,7 @@ public class ClientElec extends JPanel implements ActionListener {
 		lblImg = new JLabel();
 		lblImg.setHorizontalAlignment(JLabel.CENTER);
 		dao.serverElecSelectAll(dt);
-		
+
 		btnOK = new JButton("확인");
 		btnCancel = new JButton("취소");
 		btnOK.addActionListener(this);
@@ -74,38 +76,54 @@ public class ClientElec extends JPanel implements ActionListener {
 		panel02.setLayout(new BorderLayout());
 		panelVote = new JPanel();
 		panelVote.setLayout(new BorderLayout());
-		
-		
+
+
 		panel03 = new JPanel();
 		panel03.add(btnOK);
 		panel03.add(btnCancel);
-		
+
 		panel01.add(lblTitle, BorderLayout.NORTH);
 		panel01.add(jsp, BorderLayout.CENTER);
 		panel01.add(panel03,BorderLayout.SOUTH);
-		
-		
-		
+
 		panelVote.add(lblImg, BorderLayout.NORTH);
-		
 
 		panel02.add(lblGuide, BorderLayout.NORTH);
 		panel02.add(panelVote, BorderLayout.CENTER);
-		
-		
-		
 
 		panelMain.add(panel01);
 		panelMain.add(panel02);
 
+		jt.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(!e.getValueIsAdjusting()){
+					panelVote.removeAll();
+
+					int row = jt.getSelectedRow();		
+					int index = (int) jt.getValueAt(row, 0);
+					System.out.println(row);
+					System.out.println(index);
+					bi = dao.getElecImage(index);
+					ImageIcon img = new ImageIcon(bi);
+					lblImg.setIcon(img);
+					lblGuide.setText("후보자를 선택해 투표해 주세요.");
+
+					election = dao.getElecNameByNum(index);
+					//panelElec = new ClientVote(election);
+					panelVote.add(new ClientVote(election, index), BorderLayout.CENTER);
+
+					panelVote.revalidate();
+					panelVote.repaint();
+
+				}
+			}
+		});
+
 		add(panelMain);
-		
-		
-			
-		
-		
+
 	}
-		
+
 
 
 	@Override
@@ -114,24 +132,26 @@ public class ClientElec extends JPanel implements ActionListener {
 			ClientCards.controller.getView("Main");
 		}
 		if(e.getSource() == btnOK) {
-			
+			panelVote.removeAll();
+
 			int row = jt.getSelectedRow();		
-	        int index = (int) jt.getValueAt(row, 0);
+			int index = (int) jt.getValueAt(row, 0);
 			System.out.println(row);
 			System.out.println(index);
-	        bi = dao.getElecImage(index);
-	        ImageIcon img = new ImageIcon(bi);
+			bi = dao.getElecImage(index);
+			ImageIcon img = new ImageIcon(bi);
 			lblImg.setIcon(img);
 			lblGuide.setText("후보자를 선택해 투표해 주세요.");
-			
+
 			election = dao.getElecNameByNum(index);
-			panelElec = new ClientVote(election);
-			panelVote.add(panelElec, BorderLayout.CENTER);
-			
-			
-			
+			//panelElec = new ClientVote(election);
+			panelVote.add(new ClientVote(election, index), BorderLayout.CENTER);
+
+			panelVote.revalidate();
+			panelVote.repaint();
+
 		}
-		
-		
+
+
 	}
 }
